@@ -1,9 +1,9 @@
 
-/* TODO:
+/* TODO ✓
 
 [ ] Robust OpenGL function pointers -> https://www.opengl.org/wiki/Load_OpenGL_Functions#Windows_2
 [ ] WGL extensions -> https://www.opengl.org/wiki/Creating_an_OpenGL_Context_(WGL)#A_Note_on_Platforms
-[ ] Basic compute shader
+[ ] Bring in math library
 
 [ ] Variable sized static array in structs for Str/etc.
 
@@ -14,8 +14,11 @@
 #include <mmsystem.h>
 
 #include <gl.hpp>
-#include <basic.vert>
-#include <basic.frag>
+#include <basic.vs>
+#include <basic.fs>
+#include <compute.cs>
+
+#include <math.h>
 
 static b32 global_win32_running = false;
 
@@ -116,19 +119,24 @@ int main() {
 
 		char * gl_version = (char *)glGetString(GL_VERSION);
 
-#if 0
-		//TODO: Move to something like this so we can have more than just a vertex and fragment shader??
-		u32 program = gl_program();
-		gl_compile_and_add_shader(program, BASIC_VERT_SRC, GL_VERTEX_SHADER);
-		gl_compile_and_add_shader(program, BASIC_FRAG_SRC, GL_FRAGMENT_SHADER);
-		gl_link_program(program);
-#endif
+		u32 basic_program = gl_program();
+		gl_compile_and_add_shader(basic_program, BASIC_VS_SRC, GL_VERTEX_SHADER);
+		gl_compile_and_add_shader(basic_program, BASIC_FS_SRC, GL_FRAGMENT_SHADER);
+		gl_link_program(basic_program);
 
-		u32 vert = gl_compile_shader(BASIC_VERT_SRC, GL_VERTEX_SHADER);
-		u32 frag = gl_compile_shader(BASIC_FRAG_SRC, GL_FRAGMENT_SHADER);
-		u32 program = gl_link_program(vert, frag);
-		u32 pos_loc = glGetAttribLocation(program, "i_position");
-		u32 color_loc = glGetUniformLocation(program, "u_color");
+		u32 pos_loc = glGetAttribLocation(basic_program, "i_position");
+		u32 tex_loc = glGetUniformLocation(basic_program, "u_tex");
+		u32 color_loc = glGetUniformLocation(basic_program, "u_color");
+
+		u32 compute_program = gl_program();
+		gl_compile_and_add_shader(compute_program, COMPUTE_CS_SRC, GL_COMPUTE_SHADER);
+		gl_link_program(compute_program);
+
+		i32 work_group_size[3];
+		glGetProgramiv(compute_program, GL_COMPUTE_WORK_GROUP_SIZE, work_group_size);
+
+		u32 image_loc = glGetUniformLocation(compute_program, "u_image");
+		u32 time_loc = glGetUniformLocation(compute_program, "u_time");
 
 		f32 verts[] = {
 			 1.0f, 1.0f, 0.0f,
@@ -140,7 +148,39 @@ int main() {
 		};
 		GLVertexBuffer v_buf = gl_vertex_buffer(verts, ARRAY_COUNT(verts), 1, GL_STATIC_DRAW);
 
+#if 0
+		u32 texture_channels = 4;
+		u32 texture_size = 64;
+		u8 * texels = ALLOC_ARRAY(u8, texture_size * texture_size * texture_channels);
+		for(u32 y = 0; y < texture_size; y++) {
+			for(u32 x = 0; x < texture_size; x++) {
+				u32 i4 = (y * texture_size + x) * 4;
+
+				texels[i4 + 0] = 255;
+				texels[i4 + 1] = 0;
+				texels[i4 + 2] = 0;
+				texels[i4 + 3] = 255;
+			}
+		}
+		GLTexture tex = gl_texture(texels, texture_size, texture_size, GL_RGBA, GL_NEAREST, GL_CLAMP_TO_EDGE);
+#endif
+
+		GLTexture tex;
+		ZERO_STRUCT(&tex);
+		tex.width = 1280;
+		tex.height = 720;
+
+		glGenTextures(1, &tex.id);
+
+		glBindTexture(GL_TEXTURE_2D, tex.id);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, tex.width, tex.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
+		glViewport(0, 0, client_width, client_height);
+
 		f64 delta_time = 0.0f;
+		f64 total_time = 0.0f;
 
 		global_win32_running = true;
 		while(global_win32_running) {
@@ -182,11 +222,26 @@ int main() {
 			glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			glUseProgram(program);
+			glUseProgram(compute_program);
+
+			glActiveTexture(GL_TEXTURE0);
+			glBindImageTexture(0, tex.id, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA8);
+			glUniform1i(image_loc, 0);
+
+			glUniform1f(time_loc, (f32)total_time);
+
+			glDispatchCompute(tex.width / work_group_size[0], tex.height / work_group_size[1], 1);
+
+			glUseProgram(basic_program);
 
 			glBindBuffer(GL_ARRAY_BUFFER, v_buf.id);
 
-			glUniform4f(color_loc, 0.0f, 0.0f, 0.0f, 1.0f);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, tex.id);
+			glUniform1i(tex_loc, 0);
+
+			f32 gray = sin((f32)total_time) * 0.5f + 0.5f;
+			glUniform4f(color_loc, gray, gray, gray, 1.0f);
 
 			glVertexAttribPointer(pos_loc, 3, GL_FLOAT, 0, 0, 0);
 			glEnableVertexAttribArray(pos_loc);
@@ -200,6 +255,7 @@ int main() {
 
 			i64 delta_time_i64 = ((end_perf_count.QuadPart - begin_perf_count.QuadPart) * 1000000) / perf_freq.QuadPart;
 			delta_time = (f64)delta_time_i64 / 1000000.0;
+			total_time += delta_time;
 
 			begin_perf_count = end_perf_count;
 

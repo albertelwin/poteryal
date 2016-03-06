@@ -6,9 +6,11 @@
 #include <glext.h>
 
 #define GL_FUNC_PTR_X \
+	X(glActiveTexture, GLACTIVETEXTURE) \
 	X(glAttachShader, GLATTACHSHADER) \
 	X(glBindBuffer, GLBINDBUFFER) \
 	X(glBindFramebuffer, GLBINDFRAMEBUFFER) \
+	X(glBindImageTexture, GLBINDIMAGETEXTURE) \
 	X(glBindRenderbuffer, GLBINDRENDERBUFFER) \
 	X(glBlitFramebuffer, GLBLITFRAMEBUFFER) \
 	X(glBufferData, GLBUFFERDATA) \
@@ -16,6 +18,7 @@
 	X(glCompileShader, GLCOMPILESHADER) \
 	X(glCreateProgram, GLCREATEPROGRAM) \
 	X(glCreateShader, GLCREATESHADER) \
+	X(glDispatchCompute, GLDISPATCHCOMPUTE) \
 	X(glEnableVertexAttribArray, GLENABLEVERTEXATTRIBARRAY) \
 	X(glFramebufferRenderbuffer, GLFRAMEBUFFERRENDERBUFFER) \
 	X(glFramebufferTexture2D, GLFRAMEBUFFERTEXTURE2D) \
@@ -34,6 +37,7 @@
 	X(glShaderSource, GLSHADERSOURCE) \
 	X(glTexImage2DMultisample, GLTEXIMAGE2DMULTISAMPLE) \
 	X(glUniform1f, GLUNIFORM1F) \
+	X(glUniform1i, GLUNIFORM1I) \
 	X(glUniform2f, GLUNIFORM2F) \
 	X(glUniform3f, GLUNIFORM3F) \
 	X(glUniform4f, GLUNIFORM4F) \
@@ -116,6 +120,11 @@ struct GLFrameBuffer {
 	u32 height;
 };
 
+GLuint gl_program() {
+	GLuint id = glCreateProgram();
+	return id;
+}
+
 GLuint gl_compile_shader(char const * shader_src, GLenum shader_type) {
 	GLuint shader_id = glCreateShader(shader_type);
 	glShaderSource(shader_id, 1, &shader_src, 0);
@@ -138,10 +147,12 @@ GLuint gl_compile_shader(char const * shader_src, GLenum shader_type) {
 	return shader_id;
 }
 
-GLuint gl_link_program(GLuint vert_id, GLuint frag_id) {
-	GLuint program_id = glCreateProgram();
-	glAttachShader(program_id, vert_id);
-	glAttachShader(program_id, frag_id);
+void gl_compile_and_add_shader(GLuint program_id, char const * shader_src, GLenum shader_type) {
+	GLuint shader_id = gl_compile_shader(shader_src, shader_type);
+	glAttachShader(program_id, shader_id);
+}
+
+void gl_link_program(GLuint program_id) {
 	glLinkProgram(program_id);
 
 	GLint link_result;
@@ -157,8 +168,6 @@ GLuint gl_link_program(GLuint vert_id, GLuint frag_id) {
 		glGetProgramInfoLog(program_id, GL_MAX_INFO_LOG_LENGTH, 0, info_log);
 		printf("%s\n", info_log);
 	}
-
-	return program_id;
 }
 
 GLVertexBuffer gl_vertex_buffer(f32 const * vert_data, u32 vert_data_count, u32 components, GLenum usage_flag) {
