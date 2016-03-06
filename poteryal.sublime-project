@@ -1,0 +1,25 @@
+{
+	"build_systems":
+	[
+		{
+			"file_regex": "(src.+?(?=[:(])).([0-9]+).+?error",
+			"name": "Poteryal",
+			"shell_cmd": "build.bat",
+			"variants":
+			[
+				{
+					"name": "Run",
+					"shell_cmd": "\"bin/Poteryal.exe\""
+				}
+			],
+			"working_dir": "$project_path"
+		}
+	],
+
+	"folders":
+	[
+		{
+			"path": "."
+		}
+	]
+}
