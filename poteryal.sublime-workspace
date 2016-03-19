@@ -4,6 +4,70 @@
 		"selected_items":
 		[
 			[
+				"pal",
+				"palette_file_name"
+			],
+			[
+				"glUnif",
+				"glUniform1i"
+			],
+			[
+				"int",
+				"intersect"
+			],
+			[
+				"back_b",
+				"back_buffer_width"
+			],
+			[
+				"back_bufer",
+				"back_buffer_height"
+			],
+			[
+				"bakc_buf",
+				"back_buffer_width"
+			],
+			[
+				"back",
+				"back_buffer_width"
+			],
+			[
+				"ray_",
+				"ray_direction"
+			],
+			[
+				"inver",
+				"inverse_view_projection"
+			],
+			[
+				"u_c",
+				"u_camera_pos"
+			],
+			[
+				"game_",
+				"game_memory"
+			],
+			[
+				"textu",
+				"texture_size"
+			],
+			[
+				"delta_tim",
+				"delta_time_f64"
+			],
+			[
+				"game",
+				"game_memory"
+			],
+			[
+				"glGet",
+				"glGetUniformLocation"
+			],
+			[
+				"basic",
+				"basic_program"
+			],
+			[
 				"texture_",
 				"texture_channels"
 			],
@@ -450,70 +514,6 @@
 			[
 				"MenuButtonId",
 				"MenuButtonId_play"
-			],
-			[
-				"MenuPageId_",
-				"MenuPageId_main"
-			],
-			[
-				"button",
-				"button_count"
-			],
-			[
-				"MenuBut",
-				"MenuButtonId_credits"
-			],
-			[
-				"MenuButtonId_",
-				"MenuButtonId_score"
-			],
-			[
-				"Menu",
-				"MenuPageId_main"
-			],
-			[
-				"Render",
-				"RenderElement"
-			],
-			[
-				"scree",
-				"screen_height"
-			],
-			[
-				"screen",
-				"screen_width"
-			],
-			[
-				"Intr",
-				"IntroFrame"
-			],
-			[
-				"Intro",
-				"IntroMetaState"
-			],
-			[
-				"AssetId_score",
-				"AssetId_score_background"
-			],
-			[
-				"ui_render",
-				"ui_render_group"
-			],
-			[
-				"pick_",
-				"pick_ui_elem"
-			],
-			[
-				"Asse",
-				"AssetState"
-			],
-			[
-				"score_",
-				"score_background"
-			],
-			[
-				"change",
-				"change_location"
 			]
 		]
 	},
@@ -523,71 +523,31 @@
 			"file": "src/win32_main.cpp",
 			"settings":
 			{
-				"buffer_size": 6493,
+				"buffer_size": 5168,
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "/C/Users/Albert/Downloads/ogl_cs_example/main.cpp",
+			"file": "src/poteryal.cpp",
 			"settings":
 			{
-				"buffer_size": 702,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "/C/Users/Albert/Downloads/ogl_cs_example/opengl.h",
-			"settings":
-			{
-				"buffer_size": 526,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "/C/Users/Albert/Downloads/ogl_cs_example/opengl_cs.cpp",
-			"settings":
-			{
-				"buffer_size": 2042,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "/C/Users/Albert/Downloads/ogl_cs_example/opengl_util.cpp",
-			"settings":
-			{
-				"buffer_size": 5903,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "src/compute.cs",
-			"settings":
-			{
-				"buffer_size": 544,
+				"buffer_size": 4696,
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "src/basic.fs",
+			"file": "build.bat",
 			"settings":
 			{
-				"buffer_size": 236,
+				"buffer_size": 492,
 				"line_ending": "Windows"
 			}
 		},
 		{
-			"file": "src/basic.vs",
+			"file": "/C/Users/Albert/Downloads/ATG/avi_to_gif.bat",
 			"settings":
 			{
-				"buffer_size": 220,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "src/gl.hpp",
-			"settings":
-			{
-				"buffer_size": 8616,
+				"buffer_size": 317,
 				"line_ending": "Windows"
 			}
 		},
@@ -600,6 +560,14 @@
 			}
 		},
 		{
+			"file": "src/math.cpp",
+			"settings":
+			{
+				"buffer_size": 4669,
+				"line_ending": "Windows"
+			}
+		},
+		{
 			"file": "poteryal.sublime-project",
 			"settings":
 			{
@@ -608,10 +576,26 @@
 			}
 		},
 		{
-			"file": "build.bat",
+			"file": "src/math.hpp",
 			"settings":
 			{
-				"buffer_size": 492,
+				"buffer_size": 18675,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "src/poteryal.hpp",
+			"settings":
+			{
+				"buffer_size": 571,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "src/basic.fs",
+			"settings":
+			{
+				"buffer_size": 1893,
 				"line_ending": "Windows"
 			}
 		}
@@ -798,12 +782,29 @@
 	],
 	"file_history":
 	[
-		"/C/Users/Albert/Poteryal/repo/src/basic.cs",
-		"/C/Users/Albert/Downloads/ogl_cs_example/opengl.h",
-		"/C/Users/Albert/Poteryal/repo/src/basic.frag",
+		"/C/Users/Albert/Downloads/ATG/convert.bat",
+		"/C/Users/Albert/Downloads/ffmpeg/bin/convert.bat",
+		"/C/Users/Albert/Downloads/skull.raw/skull.raw",
+		"/C/Users/Albert/Poteryal/repo/src/compute.cs",
+		"/C/Users/Albert/Poteryal/repo/src/poteryal.hpp",
+		"/C/Users/Albert/Poteryal/repo/src/poteryal.cpp",
 		"/C/Users/Albert/Poteryal/repo/src/basic.fs",
-		"/C/Users/Albert/Poteryal/src/win32_main.cpp",
+		"/C/Users/Albert/Poteryal/repo/src/math.hpp",
+		"/C/Users/Albert/Poteryal/repo/src/math.cpp",
+		"/C/Users/Albert/Poteryal/repo/src/basic.vs",
+		"/C/Users/Albert/Poteryal/repo/src/gl.hpp",
+		"/C/Users/Albert/Poteryal/repo/src/gl.cpp",
+		"/C/Users/Albert/Poteryal/repo/src/sys.hpp",
 		"/C/Users/Albert/Poteryal/repo/poteryal.sublime-project",
+		"/C/Users/Albert/Poteryal/repo/build.bat",
+		"/C/Users/Albert/Poteryal/repo/src/glext.h",
+		"/C/Users/Albert/Downloads/ogl_cs_example/opengl_util.cpp",
+		"/C/Users/Albert/Downloads/ogl_cs_example/main.cpp",
+		"/C/Users/Albert/Downloads/ogl_cs_example/opengl.h",
+		"/C/Users/Albert/Downloads/ogl_cs_example/opengl_cs.cpp",
+		"/C/Users/Albert/Poteryal/repo/src/basic.cs",
+		"/C/Users/Albert/Poteryal/repo/src/basic.frag",
+		"/C/Users/Albert/Poteryal/src/win32_main.cpp",
 		"/C/Users/Albert/Dolly/repo/build.bat",
 		"/C/Users/Albert/Practice/practice.sublime-project",
 		"/C/Users/Albert/Practice/main.cpp",
@@ -908,24 +909,7 @@
 		"/C/Users/Albert/Downloads/boxcar/Trunk/Source/GraphicsPrimitives.cpp",
 		"/C/Users/Albert/Downloads/boxcar/Trunk/Source/GraphicsPrimitives.hpp",
 		"/C/Users/Albert/Downloads/boxcar/Trunk/Source/GraphicsEvents.hpp",
-		"/C/Users/Albert/Downloads/boxcar/Trunk/Source/EventManagerInterface.hpp",
-		"/C/Users/Albert/Downloads/boxcar/Trunk/Source/EventManager.hpp",
-		"/C/Users/Albert/Downloads/boxcar/Trunk/Source/Events.hpp",
-		"/C/Users/Albert/Downloads/boxcar/Trunk/Source/MathVector.hpp",
-		"/C/Users/Albert/Downloads/boxcar/Trunk/Source/Math.hpp",
-		"/C/Users/Albert/Downloads/boxcar/Trunk/Source/main.cpp",
-		"/C/Users/Albert/Downloads/boxcar/Trunk/Source/FuzzyLogic.hpp",
-		"/C/Emscripten/emscripten/1.35.0/src/library_gl.js",
-		"/C/Emscripten/emscripten/1.35.0/system/include/emscripten/html5.h",
-		"/C/Users/Albert/Dolly/repo/dat/pickup0.wav",
-		"/C/Users/Albert/Dolly/repo/src/black_filter.frag",
-		"/C/Emscripten/emscripten/1.35.0/tests/test_webgl_context_attributes_common.c",
-		"/C/Emscripten/emscripten/1.35.0/tests/test_webgl_context_attributes_sdl.c",
-		"/C/Users/Albert/Nova/repo/src/threshold_texture.frag",
-		"/C/Users/Albert/Nova/repo/src/screen_quad.vert",
-		"/C/Users/Albert/Dropbox/NMS/Docs/Dolly Game Doc.txt",
-		"/C/Users/Albert/AppData/Local/Temp/Temp1_tv_repo.zip/repo/src/app.cpp",
-		"/C/Users/Albert/AppData/Local/Temp/Temp1_tv_repo.zip/repo/src/graphics.cpp"
+		"/C/Users/Albert/Downloads/boxcar/Trunk/Source/EventManagerInterface.hpp"
 	],
 	"find":
 	{
@@ -944,6 +928,94 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"filters",
+			"fps=%frames%,scale=%scale%:-1:flags=lanczos",
+			"palette_file",
+			"palette",
+			"palette_file_name",
+			"\"poteryal.avi\"",
+			"frames_per_second",
+			"scale=320",
+			"\"palette.png\"",
+			"-ss 1 -t 6",
+			"30",
+			"-t 6",
+			"640",
+			"24",
+			"5.0f;",
+			"volume_tex_size",
+			"2.0f;",
+			"texture_size",
+			"2.5f;",
+			"rot_speed",
+			"(1.0f / 6.0f)",
+			"2.0f;",
+			"0.04f",
+			"320",
+			"2.5f",
+			"GL_NEAREST",
+			"GL_LINEAR",
+			"0.02f",
+			"0.04f",
+			"math::frac(",
+			"dst",
+			"					f32",
+			"f32",
+			"f32 r",
+			"5.0f",
+			"02f",
+			"0.2f",
+			"math::TAU",
+			"float",
+			"float ",
+			"i_id",
+			"b.",
+			"min",
+			"y",
+			"ty",
+			"tmax",
+			"tmin",
+			"float ",
+			"r.x0",
+			"*r.n_inv",
+			"double",
+			"game_state",
+			"u_tex",
+			"tex_3d",
+			") *",
+			"u_camera_pos",
+			"f",
+			"GL_REPEAT",
+			"sampler3D",
+			"3d_tex",
+			"(u8)",
+			"i4",
+			"texture_size",
+			"delta_time",
+			"pos_loc",
+			"tex.",
+			"game_state->tex.",
+			"basic_program",
+			"compute_program",
+			"u32 ",
+			"16",
+			"compute_work_group_size",
+			"COMPUTE_WORK_GROUP_SIZE",
+			"compute_work_group_size",
+			"GL_k",
+			"compute_work_group_size",
+			"COMPUTE_WORK_GROUP_SIZE",
+			"compute_work_group_size",
+			"work_group_size",
+			"WORK_GROUP_SIZE",
+			"work_group_size",
+			"WORK_GROUP_SIZE",
+			"work_group_size",
+			"16",
+			"gray",
+			"GLBINDIMAGETEXTURE",
+			"texHandle",
+			": '",
 			"f32",
 			" gl_texture",
 			"gl_texture",
@@ -983,95 +1055,7 @@
 			"0.1f",
 			"1.0f",
 			"0.0f",
-			"elapsed",
-			"elapsed_time_i64",
-			"Sleep",
-			"timeBeginPeriod",
-			"timeBegin",
-			"elapsed_perf_count",
-			"begin_counter",
-			"window_height",
-			"window_width",
-			"(u32)",
-			"%u",
-			"window_rect",
-			"client_rect",
-			"\n",
-			",\n",
-			" ",
-			"std::print",
-			"u32 ",
-			"tmp__",
-			"tmp##__LINE__",
-			"0.5f",
-			"pos_loc",
-			"1: '",
-			"vert_size",
-			": 'g",
-			"win32_main.cpp(134) : error C3861: '",
-			"vertex_buffer.id",
-			"varying",
-			"name##__",
-			"gl_rendering_context",
-			"func",
-			"GL_FUNC_PTR",
-			": 'gl",
-			"C:\\Users\\Albert\\Practice\\gl.hpp",
-			"glShaderSource",
-			"glCreateshader",
-			"__EMSCRIPTEN__",
-			"glUseProgram",
-			"glUseShaderProgram",
-			"Win32DisplayBufferInWindow",
-			"PDF",
-			"  DWORD ",
-			"  B",
-			"  ",
-			"pixel_format_desc",
-			"(i32)",
-			"ReleaseDC",
-			"GetDC",
-			"			",
-			"running",
-			"Win32Main",
-			"GlobalRunning",
-			"Win32MainWindowCall",
-			"Win32Proc",
-			"Win32ProcessPendin",
-			"Win32Res",
-			"ShowCode",
-			"ShowWindow",
-			"Win32ProcessPendingMessage",
-			"ShowWindow",
-			"Win32displayBuffer",
-			"__VA_ARGS__",
-			"var",
-			"	print_arena(arena);\n",
-			"memory_arena",
-			"EndTemp",
-			"BeginTemporaryMemory",
-			"RenderMemory",
-			"BeginTemp",
-			"u32 *",
-			"total",
-			"tmp",
-			"array",
-			"ARRAY",
-			"array",
-			"ARRAY",
-			"array",
-			"divide",
-			"merge_sort__",
-			"divide",
-			"count - mid",
-			"src1",
-			"src1_elems",
-			"src0_count",
-			"src0_elems",
-			"left",
-			"tmp_count",
-			"ARRAY_COUNT(src1)",
-			"		"
+			"elapsed"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -1089,7 +1073,7 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 3,
 			"sheets":
 			[
 				{
@@ -1098,192 +1082,78 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6493,
+						"buffer_size": 5168,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								5686,
-								5686
+								2411,
+								2411
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/C++/C++.sublime-syntax",
 							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 1988.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "/C/Users/Albert/Downloads/ogl_cs_example/main.cpp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 702,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 8,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "/C/Users/Albert/Downloads/ogl_cs_example/opengl.h",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 526,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 9,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "/C/Users/Albert/Downloads/ogl_cs_example/opengl_cs.cpp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2042,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								636,
-								1086
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 6,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "/C/Users/Albert/Downloads/ogl_cs_example/opengl_util.cpp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 5903,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.sublime-syntax"
 						},
 						"translation.x": 0.0,
 						"translation.y": 720.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 5,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "src/compute.cs",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 544,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								57,
-								57
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/OpenGL Shading Language (GLSL)/GLSL.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 4,
 					"type": "text"
 				},
 				{
-					"buffer": 6,
-					"file": "src/basic.fs",
+					"buffer": 1,
+					"file": "src/poteryal.cpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 236,
+						"buffer_size": 4696,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								135,
-								135
+								2921,
+								2921
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/OpenGL Shading Language (GLSL)/GLSL.tmLanguage"
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 559.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "build.bat",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 492,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								9
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Batch File/Batch File.sublime-syntax"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
@@ -1293,64 +1163,35 @@
 					"type": "text"
 				},
 				{
-					"buffer": 7,
-					"file": "src/basic.vs",
+					"buffer": 3,
+					"file": "/C/Users/Albert/Downloads/ATG/avi_to_gif.bat",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 220,
+						"buffer_size": 317,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								174,
-								174
+								68,
+								68
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/OpenGL Shading Language (GLSL)/GLSL.tmLanguage"
+							"syntax": "Packages/Batch File/Batch File.sublime-syntax"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 0,
 					"type": "text"
 				},
 				{
-					"buffer": 8,
-					"file": "src/gl.hpp",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 8616,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								8197,
-								8185
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/C++/C++.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 2672.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 9,
+					"buffer": 4,
 					"file": "src/sys.hpp",
 					"semi_transient": false,
 					"settings":
@@ -1372,14 +1213,43 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 4543.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 7,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
-					"buffer": 10,
+					"buffer": 5,
+					"file": "src/math.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4669,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 631.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
 					"file": "poteryal.sublime-project",
 					"semi_transient": false,
 					"settings":
@@ -1391,8 +1261,8 @@
 						"selection":
 						[
 							[
-								231,
-								231
+								0,
+								0
 							]
 						],
 						"settings":
@@ -1404,35 +1274,94 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 11,
+					"stack_index": 9,
 					"type": "text"
 				},
 				{
-					"buffer": 11,
-					"file": "build.bat",
+					"buffer": 7,
+					"file": "src/math.hpp",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 492,
+						"buffer_size": 18675,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								48,
-								48
+								16338,
+								16404
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Batch File/Batch File.sublime-syntax"
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 10,
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "src/poteryal.hpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 571,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								456,
+								456
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "src/basic.fs",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1893,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1686,
+								1686
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/OpenGL Shading Language (GLSL)/GLSL.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 31.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
 					"type": "text"
 				}
 			]
@@ -1492,47 +1421,83 @@
 		[
 			[
 				"",
-				"src\\win32_main.cpp"
+				"build.bat"
 			],
 			[
-				"gl",
-				"src\\gl.hpp"
-			],
-			[
-				"basic",
-				"src\\basic.fs"
-			],
-			[
-				"compute",
-				"src\\compute.cs"
-			],
-			[
-				"win",
-				"src\\win32_main.cpp"
-			],
-			[
-				"open",
-				"C:\\Users\\Albert\\Downloads\\ogl_cs_example\\opengl_cs.cpp"
-			],
-			[
-				"sys",
-				"src\\sys.hpp"
-			],
-			[
-				"proj",
-				"poteryal.sublime-project"
+				"con",
+				"C:\\Users\\Albert\\Downloads\\ffmpeg\\bin\\convert.bat"
 			],
 			[
 				"bu",
 				"build.bat"
 			],
 			[
-				"main",
-				"main.cpp"
+				"win",
+				"src\\win32_main.cpp"
+			],
+			[
+				"sys",
+				"src\\sys.hpp"
+			],
+			[
+				"basi",
+				"src\\basic.fs"
+			],
+			[
+				"port",
+				"src\\poteryal.cpp"
+			],
+			[
+				"ma",
+				"src\\math.cpp"
 			],
 			[
 				"win32",
-				"win32_main.cpp"
+				"src\\win32_main.cpp"
+			],
+			[
+				"math",
+				"src\\math.hpp"
+			],
+			[
+				"asm",
+				"poteryal.sublime-project"
+			],
+			[
+				"compute",
+				"src\\compute.cs"
+			],
+			[
+				"fs",
+				"src\\basic.fs"
+			],
+			[
+				"gl",
+				"src\\gl.cpp"
+			],
+			[
+				"basic",
+				"src\\basic.fs"
+			],
+			[
+				"pot",
+				"src\\poteryal.hpp"
+			],
+			[
+				"com",
+				"src\\compute.cs"
+			],
+			[
+				"main",
+				"C:\\Users\\Albert\\Downloads\\ogl_cs_example\\main.cpp"
+			],
+			[
+				"open",
+				"C:\\Users\\Albert\\Downloads\\ogl_cs_example\\opengl_cs.cpp"
+			],
+			[
+				"proj",
+				"poteryal.sublime-project"
 			],
 			[
 				"b",
@@ -1547,16 +1512,8 @@
 				"basic.vert"
 			],
 			[
-				"basi",
-				"basic.frag"
-			],
-			[
 				"glex",
 				"glext.h"
-			],
-			[
-				"ma",
-				"main.cpp"
 			],
 			[
 				"p",
@@ -1589,10 +1546,6 @@
 			[
 				"render",
 				"src\\render.cpp"
-			],
-			[
-				"math",
-				"src\\math.hpp"
 			],
 			[
 				"ga",
@@ -1649,10 +1602,6 @@
 			[
 				"per",
 				"bin\\dev\\prefs.js"
-			],
-			[
-				"asm",
-				"src\\asm_js_main.cpp"
 			],
 			[
 				"min",
@@ -1981,26 +1930,6 @@
 			[
 				"asset_f",
 				"src\\asset_format.hpp"
-			],
-			[
-				"tetu",
-				"src\\texture_packer.cpp"
-			],
-			[
-				"bmp",
-				"C:\\Users\\Albert\\Dolly\\media\\bmp.hpp"
-			],
-			[
-				"bui",
-				"build.bat"
-			],
-			[
-				"intr",
-				"src\\intrin.hpp"
-			],
-			[
-				"intrin",
-				"src\\intrin.hpp"
 			]
 		],
 		"width": 0.0
@@ -2016,12 +1945,12 @@
 				"C:\\Users\\Albert\\Dolly\\repo\\dolly.sublime-project"
 			],
 			[
-				"do",
-				"C:\\Users\\Albert\\Dolly\\repo\\dolly.sublime-project"
-			],
-			[
 				"nova",
 				"C:\\Users\\Albert\\Nova\\repo\\nova.sublime-project"
+			],
+			[
+				"do",
+				"C:\\Users\\Albert\\Dolly\\repo\\dolly.sublime-project"
 			]
 		],
 		"width": 380.0
