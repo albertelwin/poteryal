@@ -523,7 +523,7 @@
 			"file": "src/win32_main.cpp",
 			"settings":
 			{
-				"buffer_size": 5168,
+				"buffer_size": 5096,
 				"line_ending": "Windows"
 			}
 		},
@@ -531,7 +531,7 @@
 			"file": "src/poteryal.cpp",
 			"settings":
 			{
-				"buffer_size": 4696,
+				"buffer_size": 4536,
 				"line_ending": "Windows"
 			}
 		},
@@ -540,14 +540,6 @@
 			"settings":
 			{
 				"buffer_size": 492,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "/C/Users/Albert/Downloads/ATG/avi_to_gif.bat",
-			"settings":
-			{
-				"buffer_size": 317,
 				"line_ending": "Windows"
 			}
 		},
@@ -595,7 +587,7 @@
 			"file": "src/basic.fs",
 			"settings":
 			{
-				"buffer_size": 1893,
+				"buffer_size": 1866,
 				"line_ending": "Windows"
 			}
 		}
@@ -782,6 +774,9 @@
 	],
 	"file_history":
 	[
+		"/C/Users/Albert/Poteryal/repo/.gitignore",
+		"/C/Users/Albert/Dolly/repo/.gitignore",
+		"/C/Users/Albert/Downloads/ATG/avi_to_gif.bat",
 		"/C/Users/Albert/Downloads/ATG/convert.bat",
 		"/C/Users/Albert/Downloads/ffmpeg/bin/convert.bat",
 		"/C/Users/Albert/Downloads/skull.raw/skull.raw",
@@ -850,7 +845,6 @@
 		"/C/Users/Albert/Dolly/repo/src/platform.hpp",
 		"/C/Users/Albert/Dolly/repo/src/template.html",
 		"/C/Emscripten/emscripten/1.35.0/src/library_sdl.js",
-		"/C/Users/Albert/Dolly/repo/.gitignore",
 		"/C/Users/Albert/Dolly/repo/src/game.hpp",
 		"/C/Users/Albert/Dolly/repo/src/render.hpp",
 		"/C/Users/Albert/Dolly/repo/src/basic.frag",
@@ -907,9 +901,7 @@
 		"/C/Users/Albert/Downloads/boxcar/Trunk/Source/Animation.hpp",
 		"/C/Users/Albert/Downloads/boxcar/Trunk/Source/Animation.cpp",
 		"/C/Users/Albert/Downloads/boxcar/Trunk/Source/GraphicsPrimitives.cpp",
-		"/C/Users/Albert/Downloads/boxcar/Trunk/Source/GraphicsPrimitives.hpp",
-		"/C/Users/Albert/Downloads/boxcar/Trunk/Source/GraphicsEvents.hpp",
-		"/C/Users/Albert/Downloads/boxcar/Trunk/Source/EventManagerInterface.hpp"
+		"/C/Users/Albert/Downloads/boxcar/Trunk/Source/GraphicsPrimitives.hpp"
 	],
 	"find":
 	{
@@ -928,6 +920,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"3.0f;",
 			"filters",
 			"fps=%frames%,scale=%scale%:-1:flags=lanczos",
 			"palette_file",
@@ -1054,8 +1047,7 @@
 			"1.0f",
 			"0.1f",
 			"1.0f",
-			"0.0f",
-			"elapsed"
+			"0.0f"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -1073,7 +1065,7 @@
 	"groups":
 	[
 		{
-			"selected": 3,
+			"selected": 8,
 			"sheets":
 			[
 				{
@@ -1082,15 +1074,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 5168,
+						"buffer_size": 5096,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2411,
-								2411
+								239,
+								239
 							]
 						],
 						"settings":
@@ -1099,10 +1091,10 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 720.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
@@ -1111,15 +1103,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4696,
+						"buffer_size": 4536,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2921,
-								2921
+								3570,
+								3570
 							]
 						],
 						"settings":
@@ -1128,10 +1120,10 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 559.0,
+						"translation.y": 475.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
@@ -1147,8 +1139,8 @@
 						"selection":
 						[
 							[
-								0,
-								9
+								492,
+								492
 							]
 						],
 						"settings":
@@ -1159,39 +1151,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
 					"buffer": 3,
-					"file": "/C/Users/Albert/Downloads/ATG/avi_to_gif.bat",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 317,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								68,
-								68
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Batch File/Batch File.sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 4,
 					"file": "src/sys.hpp",
 					"semi_transient": false,
 					"settings":
@@ -1213,14 +1177,14 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 4543.0,
+						"translation.y": 235.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 3,
 					"type": "text"
 				},
 				{
-					"buffer": 5,
+					"buffer": 4,
 					"file": "src/math.cpp",
 					"semi_transient": false,
 					"settings":
@@ -1249,7 +1213,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 6,
+					"buffer": 5,
 					"file": "poteryal.sublime-project",
 					"semi_transient": false,
 					"settings":
@@ -1274,11 +1238,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 9,
+					"stack_index": 8,
 					"type": "text"
 				},
 				{
-					"buffer": 7,
+					"buffer": 6,
 					"file": "src/math.hpp",
 					"semi_transient": false,
 					"settings":
@@ -1290,8 +1254,8 @@
 						"selection":
 						[
 							[
-								16338,
-								16404
+								133,
+								133
 							]
 						],
 						"settings":
@@ -1303,11 +1267,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 8,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
-					"buffer": 8,
+					"buffer": 7,
 					"file": "src/poteryal.hpp",
 					"semi_transient": false,
 					"settings":
@@ -1336,20 +1300,20 @@
 					"type": "text"
 				},
 				{
-					"buffer": 9,
+					"buffer": 8,
 					"file": "src/basic.fs",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1893,
+						"buffer_size": 1866,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1686,
-								1686
+								1660,
+								1660
 							]
 						],
 						"settings":
@@ -1358,10 +1322,10 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 31.0,
+						"translation.y": 120.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 0,
 					"type": "text"
 				}
 			]
@@ -1421,15 +1385,7 @@
 		[
 			[
 				"",
-				"build.bat"
-			],
-			[
-				"con",
-				"C:\\Users\\Albert\\Downloads\\ffmpeg\\bin\\convert.bat"
-			],
-			[
-				"bu",
-				"build.bat"
+				"src\\basic.fs"
 			],
 			[
 				"win",
@@ -1440,12 +1396,24 @@
 				"src\\sys.hpp"
 			],
 			[
-				"basi",
-				"src\\basic.fs"
+				"math",
+				"src\\math.hpp"
 			],
 			[
 				"port",
 				"src\\poteryal.cpp"
+			],
+			[
+				"con",
+				"C:\\Users\\Albert\\Downloads\\ffmpeg\\bin\\convert.bat"
+			],
+			[
+				"bu",
+				"build.bat"
+			],
+			[
+				"basi",
+				"src\\basic.fs"
 			],
 			[
 				"ma",
@@ -1454,10 +1422,6 @@
 			[
 				"win32",
 				"src\\win32_main.cpp"
-			],
-			[
-				"math",
-				"src\\math.hpp"
 			],
 			[
 				"asm",
@@ -1942,7 +1906,7 @@
 		[
 			[
 				"",
-				"C:\\Users\\Albert\\Dolly\\repo\\dolly.sublime-project"
+				"C:\\Users\\Albert\\Practice\\practice.sublime-project"
 			],
 			[
 				"nova",

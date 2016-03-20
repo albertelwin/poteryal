@@ -1,10 +1,10 @@
 
 /* TODO ✓
 
+[ ] Tidy up math library
+
 [ ] Robust OpenGL function pointers -> https://www.opengl.org/wiki/Load_OpenGL_Functions#Windows_2
 [ ] WGL extensions -> https://www.opengl.org/wiki/Creating_an_OpenGL_Context_(WGL)#A_Note_on_Platforms
-[ ] Bring in math library
-
 [ ] Variable sized static array in structs for Str/etc.
 
 */
@@ -31,15 +31,19 @@ HGLRC win32_create_gl_context(HWND window, HDC device_context) {
 
 	i32 pixel_format_index = ChoosePixelFormat(device_context, &pixel_format);
 	ASSERT(pixel_format_index);
+	DescribePixelFormat(device_context, pixel_format_index, sizeof(pixel_format), &pixel_format);
 	b32 pixel_format_set = SetPixelFormat(device_context, pixel_format_index, &pixel_format);
 
 	HGLRC gl_context = wglCreateContext(device_context);
-	wglMakeCurrent(device_context, gl_context);
-
+	if(wglMakeCurrent(device_context, gl_context)) {
 	//TODO: Robust function pointers!!
 #define X(name, type) name = (PFN##type##PROC)wglGetProcAddress(#name);
-	GL_FUNC_PTR_X
+		GL_FUNC_PTR_X
 #undef X
+	}
+	else {
+		INVALID_PATH();
+	}
 
 	return gl_context;
 }

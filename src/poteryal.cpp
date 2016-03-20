@@ -42,7 +42,7 @@ void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
 			for(u32 y = 0; y < texture_size; y++) {
 				for(u32 x = 0; x < texture_size; x++, i += texture_channels) {
 
-					math::Vec3 pos = math::vec3(0.0f);
+					Vec3 pos = vec3(0.0f);
 					pos.x = (f32)x / (f32)(texture_size - 1);
 					pos.y = (f32)y / (f32)(texture_size - 1);
 					pos.z = (f32)z / (f32)(texture_size - 1);
@@ -52,7 +52,7 @@ void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
 					f32 r = pos.x;
 					f32 g = pos.y;
 					f32 b = pos.z;
-					f32 a = v * MAX(1.0f - math::length(pos * 2.0f - 1.0f) * 1.1f, 0.0f) * 0.2f;
+					f32 a = v * MAX(1.0f - length(pos * 2.0f - 1.0f) * 1.1f, 0.0f) * 0.2f;
 
 					texels[i + 0] = (u8)(r * 255.0f);
 					texels[i + 1] = (u8)(g * 255.0f);
@@ -96,17 +96,18 @@ void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
 
 	f32 camera_speed = 1.0f / 20.0f;
 
-	math::Vec3 camera_pos = math::vec3(0.0f);
-	camera_pos.x = math::cos(game_state->total_time * math::TAU * camera_speed) * 2.0f;
-	camera_pos.z = math::sin(game_state->total_time * math::TAU * camera_speed) * 2.0f;
+	Vec3 camera_pos = vec3(0.0f);
+	// camera_pos.x = cos(game_state->total_time * TAU * camera_speed) * 2.0f;
+	camera_pos.x = cos(game_state->total_time * TAU * camera_speed) * 2.0f;
+	camera_pos.z = sin(game_state->total_time * TAU * camera_speed) * 2.0f;
 
-	math::Mat4 view = math::look_at(camera_pos, math::vec3(0.0f), math::VEC3_UP);
+	Mat4 view = look_at(camera_pos, vec3(0.0f), vec3(0.0f, 1.0f, 0.0f));
 
 	f32 aspect_ratio = (f32)game_input->back_buffer_width / (f32)game_input->back_buffer_height;
-	math::Mat4 proj = math::perspective_projection(aspect_ratio, 60.0f, 0.1f, F32_MAX);
+	Mat4 proj = perspective_projection(aspect_ratio, 60.0f, 0.1f, F32_MAX);
 
-	math::Mat4 view_proj = proj * view;
-	math::Mat4 inv_view_proj = math::inverse(view_proj);
+	Mat4 view_proj = proj * view;
+	Mat4 inv_view_proj = inverse(view_proj);
 
 	glUniform1f(game_state->u_time, game_state->total_time);
 	glUniform3f(game_state->camera_pos, camera_pos.x, camera_pos.y, camera_pos.z);

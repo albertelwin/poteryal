@@ -19,11 +19,11 @@
 #if DEBUG_ENABLED
 
 #if defined(WIN32)
-#define __PRINT_ASSERT(x) MessageBoxA(0, x, "ASSERT", MB_OK | MB_ICONERROR); std::printf("ASSERT: %s\n", x)
-// #define __FORCE_EXIT() std::exit(EXIT_FAILURE)
+#define __PRINT_ASSERT(x) MessageBoxA(0, x, "ASSERT", MB_OK | MB_ICONERROR); printf("ASSERT: %s\n", x)
+// #define __FORCE_EXIT() exit(EXIT_FAILURE)
 #define __FORCE_EXIT() *((int *)(0)) = 0;
 #elif defined(__EMSCRIPTEN__)
-#define __PRINT_ASSERT(x) std::printf("ASSERT: %s\n", x)
+#define __PRINT_ASSERT(x) printf("ASSERT: %s\n", x)
 #define __FORCE_EXIT() emscripten_force_exit(EXIT_FAILURE)
 #endif
 
@@ -34,6 +34,7 @@
 	}
 
 #define ASSERT(x) __ASSERT(x)
+#define INVALID_PATH() ASSERT(!"Invalid path")
 #define INVALID_CASE() default: { ASSERT(!"Invalid case"); break; }
 
 #else
@@ -239,7 +240,7 @@ inline void * push_copy_memory_(MemoryArena * arena, void * src, size_t size) {
 #define ALLOC_ARRAY(type, length, ...) (type *)alloc_memory_(sizeof(type) * length, ##__VA_ARGS__)
 #define ALLOC_MEMORY(type, size, ...) (type *)alloc_memory_(size, ##__VA_ARGS__)
 inline void * alloc_memory_(size_t size, b32 zero = true) {
-	void * ptr = std::malloc(size);
+	void * ptr = malloc(size);
 	if(zero) {
 		zero_memory(ptr, size);
 	}
@@ -249,7 +250,7 @@ inline void * alloc_memory_(size_t size, b32 zero = true) {
 
 #define FREE_MEMORY(ptr) free_memory_(ptr)
 inline void free_memory_(void * ptr) {
-	std::free(ptr);
+	free(ptr);
 }
 
 struct Str {
@@ -439,17 +440,17 @@ inline void str_print(Str * str, char const * fmt, ...) {
 inline MemoryPtr read_file_to_memory(char const * file_name) {
 	MemoryPtr mem_ptr = {};
 
-	std::FILE * file_ptr = std::fopen(file_name, "rb");
+	FILE * file_ptr = fopen(file_name, "rb");
 	if(file_ptr) {
-		std::fseek(file_ptr, 0, SEEK_END);
-		mem_ptr.size = (size_t)std::ftell(file_ptr);
-		std::rewind(file_ptr);
+		fseek(file_ptr, 0, SEEK_END);
+		mem_ptr.size = (size_t)ftell(file_ptr);
+		rewind(file_ptr);
 
 		mem_ptr.ptr = ALLOC_MEMORY(u8, mem_ptr.size);
-		size_t read_result = std::fread(mem_ptr.ptr, 1, mem_ptr.size, file_ptr);
+		size_t read_result = fread(mem_ptr.ptr, 1, mem_ptr.size, file_ptr);
 		ASSERT(read_result == mem_ptr.size);
 
-		std::fclose(file_ptr);		
+		fclose(file_ptr);		
 	}
 
 	return mem_ptr;
