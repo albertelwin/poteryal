@@ -55,11 +55,10 @@ void main() {
 	bool hit = intersect(box_min, box_max, ro, rd, t_min, t_max);
 	if(hit) {
 		float t = t_min;
+		float t_step = 0.02;
 
-		vec3 pos = ro + rd * t_min;
-		vec3 pos_step = rd * 0.02;
-
-		for(int i = 0; i < 256; i++) {
+		for(int i = 0; i < 128; i++) {
+			vec3 pos = ro + rd * t;
 			vec3 uv = pos * 0.5 + 0.5;
 			vec4 src = texture3D(u_tex, uv);
 
@@ -67,8 +66,8 @@ void main() {
 			src.rgb *= src.a;
 			dst = (1.0 - dst.a) * src + dst;
 
-			pos += pos_step;
-			if(pos.x > 1.0 || pos.y > 1.0 || pos.z > 1.0 || dst.a >= 1.0) {
+			t += 0.02;
+			if(t > t_max || dst.a >= 1.0) {
 				break;
 			}
 		}

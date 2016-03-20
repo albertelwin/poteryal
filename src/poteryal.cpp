@@ -3,6 +3,8 @@
 
 #include <math.cpp>
 
+#define TEXTURE_CHANNELS 4
+
 void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
 	ASSERT(sizeof(GameState) <= game_memory->size);
 	GameState * game_state = (GameState *)game_memory->ptr;
@@ -35,17 +37,16 @@ void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
 		};
 		game_state->v_buf = gl_vertex_buffer(verts, ARRAY_COUNT(verts), 1, GL_STATIC_DRAW);
 
-		u32 texture_channels = 4;
-		u32 texture_size = 16;
-		u8 * texels = PUSH_ARRAY(&game_state->arena, u8, texture_size * texture_size * texture_size);
-		for(u32 z = 0, i = 0; z < texture_size; z++) {
-			for(u32 y = 0; y < texture_size; y++) {
-				for(u32 x = 0; x < texture_size; x++, i += texture_channels) {
+		game_state->tex_size = 16;
+		game_state->texels = PUSH_ARRAY(&game_state->arena, u8, game_state->tex_size * game_state->tex_size * game_state->tex_size * TEXTURE_CHANNELS);
+		for(u32 z = 0, i = 0; z < game_state->tex_size; z++) {
+			for(u32 y = 0; y < game_state->tex_size; y++) {
+				for(u32 x = 0; x < game_state->tex_size; x++, i += TEXTURE_CHANNELS) {
 
 					Vec3 pos = vec3(0.0f);
-					pos.x = (f32)x / (f32)(texture_size - 1);
-					pos.y = (f32)y / (f32)(texture_size - 1);
-					pos.z = (f32)z / (f32)(texture_size - 1);
+					pos.x = (f32)x / (f32)(game_state->tex_size - 1);
+					pos.y = (f32)y / (f32)(game_state->tex_size - 1);
+					pos.z = (f32)z / (f32)(game_state->tex_size - 1);
 
 					f32 v = ((f32)rand() / (f32)RAND_MAX);
 
@@ -54,20 +55,19 @@ void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
 					f32 b = pos.z;
 					f32 a = v * MAX(1.0f - length(pos * 2.0f - 1.0f) * 1.1f, 0.0f) * 0.2f;
 
-					texels[i + 0] = (u8)(r * 255.0f);
-					texels[i + 1] = (u8)(g * 255.0f);
-					texels[i + 2] = (u8)(b * 255.0f);
-					texels[i + 3] = (u8)(a * 255.0f);
+					game_state->texels[i + 0] = (u8)(r * 255.0f);
+					game_state->texels[i + 1] = (u8)(g * 255.0f);
+					game_state->texels[i + 2] = (u8)(b * 255.0f);
+					game_state->texels[i + 3] = (u8)(a * 255.0f);
 				}
 			}
 		}
 
-		game_state->volume_tex_size = texture_size;
-		glGenTextures(1, &game_state->volume_tex_id);
-		ASSERT(game_state->volume_tex_id);
+		glGenTextures(1, &game_state->tex_id);
+		ASSERT(game_state->tex_id);
 
-		glBindTexture(GL_TEXTURE_3D, game_state->volume_tex_id);
-		glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA, texture_size, texture_size, texture_size, 0, GL_RGBA, GL_UNSIGNED_BYTE, texels);
+		glBindTexture(GL_TEXTURE_3D, game_state->tex_id);
+		glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA8, game_state->tex_size, game_state->tex_size, game_state->tex_size, 0, GL_RGBA, GL_UNSIGNED_BYTE, game_state->texels);
 
 		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -77,27 +77,73 @@ void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
 
 		glViewport(0, 0, game_input->back_buffer_width, game_input->back_buffer_height);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+		for(u32 i = 0; i < ARRAY_COUNT(game_state->points); i++) {
+			game_state->points[i] = rand_sample_in_sphere();
+		}
 	}
 
 	game_state->total_time += game_input->delta_time;
 
 	glClear(GL_COLOR_BUFFER_BIT);
 
+	for(u32 z = 0, i = 0; z < game_state->tex_size; z++) {
+		for(u32 y = 0; y < game_state->tex_size; y++) {
+			for(u32 x = 0; x < game_state->tex_size; x++, i += TEXTURE_CHANNELS) {
+				game_state->texels[i + 0] = 0;
+				game_state->texels[i + 1] = 0;
+				game_state->texels[i + 2] = 0;
+				game_state->texels[i + 3] = 0;
+			}
+		}
+	}
+
+	for(u32 i = 0; i < ARRAY_COUNT(game_state->points); i++) {
+		Vec3 point = game_state->points[i];
+		point *= 0.8f;
+
+		Vec3 pos = point;
+		pos += normalize(point) * sin(game_state->total_time * TAU * (1.0f / 6.0f)) * 0.2f;
+
+		Vec3 pos01 = pos * 0.5f + 0.5f;
+
+		u32 u = (u32)(pos01.x * (game_state->tex_size - 1));
+		u32 v = (u32)(pos01.y * (game_state->tex_size - 1));
+		u32 w = (u32)(pos01.z * (game_state->tex_size - 1));
+
+		ASSERT(u >= 0 && u < game_state->tex_size);
+		ASSERT(v >= 0 && v < game_state->tex_size);
+		ASSERT(w >= 0 && w < game_state->tex_size);
+
+		u32 index = u * game_state->tex_size * game_state->tex_size + v * game_state->tex_size + w;
+
+		Vec3 rgb = point * 0.5f + 0.5f;
+		f32 a = 4.0f / 255.0f;
+
+		game_state->texels[index * TEXTURE_CHANNELS + 0] = (u8)(rgb.r * 255.0f);
+		game_state->texels[index * TEXTURE_CHANNELS + 1] = (u8)(rgb.g * 255.0f);
+		game_state->texels[index * TEXTURE_CHANNELS + 2] = (u8)(rgb.b * 255.0f);
+		game_state->texels[index * TEXTURE_CHANNELS + 3] = (u8)(a * 255.0f);		
+	}
+
+	glBindTexture(GL_TEXTURE_3D, game_state->tex_id);
+	glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA8, game_state->tex_size, game_state->tex_size, game_state->tex_size, 0, GL_RGBA, GL_UNSIGNED_BYTE, game_state->texels);
+
 	glUseProgram(game_state->basic_program);
 
 	glBindBuffer(GL_ARRAY_BUFFER, game_state->v_buf.id);
 
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_3D, game_state->volume_tex_id);
+	glBindTexture(GL_TEXTURE_3D, game_state->tex_id);
 	glUniform1i(game_state->tex_loc, 0);
 
 	f32 gray = sin((f32)game_state->total_time) * 0.5f + 0.5f;
 	glUniform4f(game_state->color_loc, gray, gray, gray, 1.0f);
 
-	f32 camera_speed = 1.0f / 20.0f;
+	f32 camera_speed = 1.0f / 6.0f;
+	// f32 camera_speed = 0.0f;
 
 	Vec3 camera_pos = vec3(0.0f);
-	// camera_pos.x = cos(game_state->total_time * TAU * camera_speed) * 2.0f;
 	camera_pos.x = cos(game_state->total_time * TAU * camera_speed) * 2.0f;
 	camera_pos.z = sin(game_state->total_time * TAU * camera_speed) * 2.0f;
 

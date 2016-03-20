@@ -266,6 +266,7 @@ union Vec3 {
 	struct { f32 x, y, z; };
 	struct { Vec2 xy; f32 z_; };
 	struct { f32 x_; Vec2 yz; };
+	struct { f32 r, g, b; };
 	f32 v[3];
 };
 

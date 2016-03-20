@@ -37,8 +37,11 @@ struct GameState {
 
 	GLVertexBuffer v_buf;
 
-	u32 volume_tex_id;
-	u32 volume_tex_size;
+	u32 tex_id;
+	u32 tex_size;
+	u8 * texels;
+
+	Vec3 points[4096];
 };
 
 #endif

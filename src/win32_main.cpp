@@ -1,7 +1,9 @@
 
 /* TODO ✓
 
-[ ] Tidy up math library
+[ ] Trilinear texture writing
+[ ] 3D texture memory layout
+[ ] Fix raycast alpha blending
 
 [ ] Robust OpenGL function pointers -> https://www.opengl.org/wiki/Load_OpenGL_Functions#Windows_2
 [ ] WGL extensions -> https://www.opengl.org/wiki/Creating_an_OpenGL_Context_(WGL)#A_Note_on_Platforms
@@ -93,8 +95,8 @@ int main() {
 	QueryPerformanceCounter(&begin_perf_count);
 
 	if(RegisterClassA(&window_class)) {
-		// u32 client_width = 640, client_height = 360;
-		u32 client_width = 1280, client_height = 720;
+		u32 client_width = 640, client_height = 360;
+		// u32 client_width = 1280, client_height = 720;
 		u32 window_flags = WS_OVERLAPPEDWINDOW | WS_VISIBLE;
 
 		RECT window_rect;
