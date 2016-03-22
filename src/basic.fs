@@ -63,7 +63,6 @@ void main() {
 			vec4 src = texture3D(u_tex, uv);
 
 			//TODO: How does this blending work??
-			src.rgb *= src.a;
 			dst = (1.0 - dst.a) * src + dst;
 
 			t += 0.02;

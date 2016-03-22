@@ -37,7 +37,7 @@ void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
 		};
 		game_state->v_buf = gl_vertex_buffer(verts, ARRAY_COUNT(verts), 1, GL_STATIC_DRAW);
 
-		game_state->tex_size = 16;
+		game_state->tex_size = 64;
 		game_state->texels = PUSH_ARRAY(&game_state->arena, u8, game_state->tex_size * game_state->tex_size * game_state->tex_size * TEXTURE_CHANNELS);
 		for(u32 z = 0, i = 0; z < game_state->tex_size; z++) {
 			for(u32 y = 0; y < game_state->tex_size; y++) {
@@ -50,14 +50,13 @@ void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
 
 					f32 v = ((f32)rand() / (f32)RAND_MAX);
 
-					f32 r = pos.x;
-					f32 g = pos.y;
-					f32 b = pos.z;
 					f32 a = v * MAX(1.0f - length(pos * 2.0f - 1.0f) * 1.1f, 0.0f) * 0.2f;
+					Vec3 rgb = pos;
+					rgb *= a;
 
-					game_state->texels[i + 0] = (u8)(r * 255.0f);
-					game_state->texels[i + 1] = (u8)(g * 255.0f);
-					game_state->texels[i + 2] = (u8)(b * 255.0f);
+					game_state->texels[i + 0] = (u8)(rgb.r * 255.0f);
+					game_state->texels[i + 1] = (u8)(rgb.g * 255.0f);
+					game_state->texels[i + 2] = (u8)(rgb.b * 255.0f);
 					game_state->texels[i + 3] = (u8)(a * 255.0f);
 				}
 			}
@@ -98,12 +97,18 @@ void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
 		}
 	}
 
+#if 1
+	f32 r_255 = 1.0f / 255.0f;
+
 	for(u32 i = 0; i < ARRAY_COUNT(game_state->points); i++) {
 		Vec3 point = game_state->points[i];
-		point *= 0.8f;
+		// point *= 0.9f;
 
-		Vec3 pos = point;
-		pos += normalize(point) * sin(game_state->total_time * TAU * (1.0f / 6.0f)) * 0.2f;
+		f32 len = length(point);
+		Vec3 pos = normalize(point) * (1.0f - len * len);
+
+		// Vec3 pos = point;
+		// pos += normalize(point) * sin(game_state->total_time * TAU * (1.0f / 6.0f)) * 0.4f;
 
 		Vec3 pos01 = pos * 0.5f + 0.5f;
 
@@ -115,19 +120,32 @@ void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
 		ASSERT(v >= 0 && v < game_state->tex_size);
 		ASSERT(w >= 0 && w < game_state->tex_size);
 
-		u32 index = u * game_state->tex_size * game_state->tex_size + v * game_state->tex_size + w;
+		u32 sample = (u * game_state->tex_size * game_state->tex_size + v * game_state->tex_size + w) * TEXTURE_CHANNELS;
 
-		Vec3 rgb = point * 0.5f + 0.5f;
-		f32 a = 4.0f / 255.0f;
+		f32 r = game_state->texels[sample + 0] * r_255;
+		f32 g = game_state->texels[sample + 1] * r_255;
+		f32 b = game_state->texels[sample + 2] * r_255;
+		f32 a = game_state->texels[sample + 3] * r_255;
 
-		game_state->texels[index * TEXTURE_CHANNELS + 0] = (u8)(rgb.r * 255.0f);
-		game_state->texels[index * TEXTURE_CHANNELS + 1] = (u8)(rgb.g * 255.0f);
-		game_state->texels[index * TEXTURE_CHANNELS + 2] = (u8)(rgb.b * 255.0f);
-		game_state->texels[index * TEXTURE_CHANNELS + 3] = (u8)(a * 255.0f);		
+		Vec4 rgba = vec4(point * 0.5f + 0.5f, 0.1f);
+		// Vec4 rgba = vec4(1.0f, 1.0f, 1.0f, 0.1f);
+		rgba.rgb *= rgba.a;
+
+		//TODO: Verify this is correct!
+		r = clamp01((1.0f - a) * rgba.r + r);
+		g = clamp01((1.0f - a) * rgba.g + g);
+		b = clamp01((1.0f - a) * rgba.b + b);
+		a = clamp01((1.0f - a) * rgba.a + a);
+
+		game_state->texels[sample + 0] = (u8)(r * 255.0f);
+		game_state->texels[sample + 1] = (u8)(g * 255.0f);
+		game_state->texels[sample + 2] = (u8)(b * 255.0f);
+		game_state->texels[sample + 3] = (u8)(a * 255.0f);		
 	}
 
 	glBindTexture(GL_TEXTURE_3D, game_state->tex_id);
 	glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA8, game_state->tex_size, game_state->tex_size, game_state->tex_size, 0, GL_RGBA, GL_UNSIGNED_BYTE, game_state->texels);
+#endif
 
 	glUseProgram(game_state->basic_program);
 

@@ -41,7 +41,7 @@ struct GameState {
 	u32 tex_size;
 	u8 * texels;
 
-	Vec3 points[4096];
+	Vec3 points[4096 * 4];
 };
 
 #endif
