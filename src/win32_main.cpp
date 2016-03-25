@@ -1,8 +1,6 @@
 
 /* TODO ✓
 
-[ ] Fix black screen when using wglCreateContextAttribsARB
-
 [ ] Trilinear texture writing
 [ ] 3D texture memory layout
 
@@ -66,14 +64,10 @@ void win32_load_gl_func_ptrs() {
 	ASSERT(pixel_format_index);
 	DescribePixelFormat(device_context, pixel_format_index, sizeof(pixel_format), &pixel_format);
 	b32 pixel_format_set = SetPixelFormat(device_context, pixel_format_index, &pixel_format);
+	ASSERT(pixel_format_set);
 
 	HGLRC gl_context = wglCreateContext(device_context);
 	if(wglMakeCurrent(device_context, gl_context)) {
-	//TODO: Robust function pointers!!
-#define X(name, type) name = (PFN##type##PROC)wglGetProcAddress(#name);
-		GL_FUNC_PTR_X
-#undef X
-
 		wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)wglGetProcAddress("wglGetExtensionsStringARB");
 		ASSERT(wglGetExtensionsStringARB);
 
@@ -81,6 +75,7 @@ void win32_load_gl_func_ptrs() {
 		WGL_FUNC_PTR_X
 #undef X
 
+		//TODO: Check to make sure any extensions we're using are available!!
 #if 0
 		char wgl_ext_buf[4096];
 		c_str_cpy(wgl_ext_buf, wglGetExtensionsStringARB(device_context));
@@ -128,8 +123,8 @@ HGLRC win32_create_gl_context(HWND window, HDC device_context) {
 		WGL_COLOR_BITS_ARB, 32,
 		WGL_DEPTH_BITS_ARB, 24,
 		WGL_STENCIL_BITS_ARB, 8,
-		// WGL_SAMPLE_BUFFERS_ARB, 1,
-		// WGL_SAMPLES_ARB, WGL_MSAA_SAMPLES,
+		WGL_SAMPLE_BUFFERS_ARB, 1,
+		WGL_SAMPLES_ARB, WGL_MSAA_SAMPLES,
 		0,
 	};
 
@@ -140,24 +135,23 @@ HGLRC win32_create_gl_context(HWND window, HDC device_context) {
 
 	PIXELFORMATDESCRIPTOR pixel_format;
 	DescribePixelFormat(device_context, pixel_format_index, sizeof(pixel_format), &pixel_format);
-
 	b32 pixel_format_set = SetPixelFormat(device_context, pixel_format_index, &pixel_format);
+	ASSERT(pixel_format_set);
 
-#if 1
-	HGLRC gl_context = wglCreateContext(device_context);
-#else
 	i32 context_attribs[] = {
 		WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
 		WGL_CONTEXT_MINOR_VERSION_ARB, 4,
+		WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
 		WGL_CONTEXT_FLAGS_ARB, 0,
 		0,
 	};
 
 	HGLRC gl_context = wglCreateContextAttribsARB(device_context, 0, context_attribs);
-#endif
 	ASSERT(gl_context);
 	if(wglMakeCurrent(device_context, gl_context)) {
-		//TODO: Do we need to do anything here??
+#define X(name, type) name = (PFN##type##PROC)wglGetProcAddress(#name);
+		GL_FUNC_PTR_X
+#undef X
 	}
 	else {
 		INVALID_PATH();
@@ -193,6 +187,8 @@ LRESULT CALLBACK win32_proc(HWND window, UINT message, WPARAM w_param, LPARAM l_
 
 	return result;
 }
+
+HWND CreateGLWindow();
 
 int main() {
 	WNDCLASSA window_class;
@@ -285,6 +281,9 @@ int main() {
 			}
 
 			game_update_and_render(&game_memory, &game_input);
+			if(game_input.quit) {
+				global_win32_running = false;
+			}
 
 			SwapBuffers(device_context);
 

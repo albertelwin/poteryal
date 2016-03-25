@@ -27,6 +27,10 @@ void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
 		game_state->inv_view_proj = glGetUniformLocation(game_state->basic_program, "u_inv_view_proj");
 		game_state->camera_pos = glGetUniformLocation(game_state->basic_program, "u_camera_pos");
 
+		//NOTE: Don't forget the VAO!!
+		glGenVertexArrays(1, &game_state->vertex_array);
+		glBindVertexArray(game_state->vertex_array);
+
 		f32 verts[] = {
 			 1.0f, 1.0f, 0.0f,
 			-1.0f, 1.0f, 0.0f,
@@ -35,7 +39,7 @@ void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
 			 1.0f,-1.0f, 0.0f,
 			 1.0f, 1.0f, 0.0f,
 		};
-		game_state->v_buf = gl_vertex_buffer(verts, ARRAY_COUNT(verts), 1, GL_STATIC_DRAW);
+		game_state->v_buf = gl_vertex_buffer(verts, ARRAY_COUNT(verts), 3, GL_STATIC_DRAW);
 
 		game_state->tex_size = 64;
 		game_state->texels = PUSH_ARRAY(&game_state->arena, u8, game_state->tex_size * game_state->tex_size * game_state->tex_size * TEXTURE_CHANNELS);
@@ -73,13 +77,15 @@ void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
 		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		glViewport(0, 0, game_input->back_buffer_width, game_input->back_buffer_height);
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
+		
 		for(u32 i = 0; i < ARRAY_COUNT(game_state->points); i++) {
 			game_state->points[i] = rand_sample_in_sphere();
 		}
+
+		glDisable(GL_CULL_FACE);
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+		glViewport(0, 0, game_input->back_buffer_width, game_input->back_buffer_height);
 	}
 
 	game_state->total_time += game_input->delta_time;
@@ -177,10 +183,8 @@ void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
 	glUniform3f(game_state->camera_pos, camera_pos.x, camera_pos.y, camera_pos.z);
 	glUniformMatrix4fv(game_state->inv_view_proj, 1, false, inv_view_proj.v);
 
-	glVertexAttribPointer(game_state->pos_loc, 3, GL_FLOAT, 0, 0, 0);
+	glVertexAttribPointer(game_state->pos_loc, 3, GL_FLOAT, false, 0, 0);
 	glEnableVertexAttribArray(game_state->pos_loc);
 
 	glDrawArrays(GL_TRIANGLES, 0, game_state->v_buf.vert_count);
-
-	// glFlush();
 }

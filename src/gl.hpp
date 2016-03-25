@@ -12,6 +12,7 @@
 	X(glBindFramebuffer, GLBINDFRAMEBUFFER) \
 	X(glBindImageTexture, GLBINDIMAGETEXTURE) \
 	X(glBindRenderbuffer, GLBINDRENDERBUFFER) \
+	X(glBindVertexArray, GLBINDVERTEXARRAY) \
 	X(glBlitFramebuffer, GLBLITFRAMEBUFFER) \
 	X(glBufferData, GLBUFFERDATA) \
 	X(glCheckFramebufferStatus, GLCHECKFRAMEBUFFERSTATUS) \
@@ -25,6 +26,7 @@
 	X(glGenBuffers, GLGENBUFFERS) \
 	X(glGenFramebuffers, GLGENFRAMEBUFFERS) \
 	X(glGenRenderbuffers, GLGENRENDERBUFFERS) \
+	X(glGenVertexArrays, GLGENVERTEXARRAYS) \
 	X(glGetAttribLocation, GLGETATTRIBLOCATION) \
 	X(glGetProgramInfoLog, GLGETPROGRAMINFOLOG) \
 	X(glGetProgramiv, GLGETPROGRAMIV) \
@@ -56,7 +58,7 @@
 #define GL_MAX_INFO_LOG_LENGTH 1024
 
 // #if DEBUG_ENABLED
-#if 0
+#if 1
 #define GL_CHECK_ERRORS() { GLenum err = glGetError(); while(err != GL_NO_ERROR) { printf("ERROR: %s:%u: %s\n", (char *)__FILE__, __LINE__, gl_error_to_str(err)); err = glGetError(); } }
 char * gl_error_to_str(GLenum err) {
 	char const * str = "";

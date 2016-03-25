@@ -12,6 +12,8 @@ struct GameInput {
 	u32 back_buffer_height;
 
 	f32 delta_time;
+
+	b32 quit;
 };
 
 struct GameMemory {
@@ -35,6 +37,7 @@ struct GameState {
 	u32 inv_view_proj;
 	u32 camera_pos;
 
+	u32 vertex_array;
 	GLVertexBuffer v_buf;
 
 	u32 tex_id;
