@@ -16,25 +16,25 @@ layout(location = 0) out vec4 o_color;
 bool intersect(vec3 box_min, vec3 box_max, vec3 ro, vec3 rd, out float t_min, out float t_max) {
 	vec3 i_rd = vec3(1.0) / rd;
 
-    float tx1 = (box_min.x - ro.x) * i_rd.x;
-    float tx2 = (box_max.x - ro.x) * i_rd.x;
- 
-    t_min = min(tx1, tx2);
-    t_max = max(tx1, tx2);
- 
-    float ty1 = (box_min.y - ro.y) * i_rd.y;
-    float ty2 = (box_max.y - ro.y) * i_rd.y;
- 
-    t_min = max(t_min, min(ty1, ty2));
-    t_max = min(t_max, max(ty1, ty2));
+	float tx1 = (box_min.x - ro.x) * i_rd.x;
+	float tx2 = (box_max.x - ro.x) * i_rd.x;
 
-    float tz1 = (box_min.z - ro.z) * i_rd.z;
-    float tz2 = (box_max.z - ro.z) * i_rd.z;
- 
-    t_min = max(t_min, min(tz1, tz2));
-    t_max = min(t_max, max(tz1, tz2));
- 
-    return t_max >= t_min;
+	t_min = min(tx1, tx2);
+	t_max = max(tx1, tx2);
+
+	float ty1 = (box_min.y - ro.y) * i_rd.y;
+	float ty2 = (box_max.y - ro.y) * i_rd.y;
+
+	t_min = max(t_min, min(ty1, ty2));
+	t_max = min(t_max, max(ty1, ty2));
+
+	float tz1 = (box_min.z - ro.z) * i_rd.z;
+	float tz2 = (box_max.z - ro.z) * i_rd.z;
+
+	t_min = max(t_min, min(tz1, tz2));
+	t_max = min(t_max, max(tz1, tz2));
+
+	return t_max >= t_min;
 }
 
 void main() {

@@ -1,11 +1,12 @@
 
 /* TODO ✓
 
+[ ] Fix black screen when using wglCreateContextAttribsARB
+
 [ ] Trilinear texture writing
 [ ] 3D texture memory layout
 
 [ ] Robust OpenGL function pointers -> https://www.opengl.org/wiki/Load_OpenGL_Functions#Windows_2
-[ ] WGL extensions -> https://www.opengl.org/wiki/Creating_an_OpenGL_Context_(WGL)#A_Note_on_Platforms
 [ ] Variable sized static array in structs for Str/etc.
 
 */
@@ -13,13 +14,44 @@
 #include <sys.hpp>
 #include <gl.cpp>
 
+#include <wglext.h>
+
+PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB;
+
+#define WGL_FUNC_PTR_X \
+	X(wglChoosePixelFormatARB, WGLCHOOSEPIXELFORMATARB) \
+	X(wglCreateContextAttribsARB, WGLCREATECONTEXTATTRIBSARB) \
+	\
+
+#define X(name, type) typedef PFN##type##PROC name##__; name##__ name;
+	WGL_FUNC_PTR_X
+#undef X
+
+#define WGL_MSAA_SAMPLES 8
+
 #include <mmsystem.h>
 
 #include <poteryal.cpp>
 
 static b32 global_win32_running = false;
 
-HGLRC win32_create_gl_context(HWND window, HDC device_context) {
+void win32_load_gl_func_ptrs() {
+	WNDCLASSA window_class;
+	ZERO_STRUCT(&window_class);
+	window_class.style = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
+	window_class.lpfnWndProc = DefWindowProcA;
+	window_class.hInstance = GetModuleHandleA(0);
+	window_class.hCursor = LoadCursorA(0, IDC_ARROW);
+	window_class.lpszClassName = "DummyClass";
+
+	HWND window = 0;
+	if(RegisterClassA(&window_class)) {
+		window = CreateWindowExA(0, window_class.lpszClassName, "DummyWindow", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, 0, 0, window_class.hInstance, 0);
+	}
+	ASSERT(window);
+
+	HDC device_context = GetDC(window);
+
 	PIXELFORMATDESCRIPTOR pixel_format;
 	ZERO_STRUCT(&pixel_format);
 	pixel_format.nSize = sizeof(pixel_format);
@@ -41,6 +73,91 @@ HGLRC win32_create_gl_context(HWND window, HDC device_context) {
 #define X(name, type) name = (PFN##type##PROC)wglGetProcAddress(#name);
 		GL_FUNC_PTR_X
 #undef X
+
+		wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)wglGetProcAddress("wglGetExtensionsStringARB");
+		ASSERT(wglGetExtensionsStringARB);
+
+#define X(name, type) name = (PFN##type##PROC)wglGetProcAddress(#name);
+		WGL_FUNC_PTR_X
+#undef X
+
+#if 0
+		char wgl_ext_buf[4096];
+		c_str_cpy(wgl_ext_buf, wglGetExtensionsStringARB(device_context));
+
+		u32 wgl_ext_count = 0;
+		char * wgl_exts[256];
+		zero_memory(wgl_exts, sizeof(wgl_exts));
+
+		char * wgl_ext_it = wgl_ext_buf;
+		while(*wgl_ext_it) {
+			wgl_exts[wgl_ext_count++] = wgl_ext_it;
+			while(*wgl_ext_it) {
+				char char_ = *wgl_ext_it;
+				if(char_ == ' ') {
+					*wgl_ext_it = '\0';
+					break;
+				}
+
+				wgl_ext_it++;
+			}
+
+			wgl_ext_it++;
+		}
+#endif
+
+	}
+	else {
+		INVALID_PATH();
+	}
+
+	wglMakeCurrent(0, 0);
+	wglDeleteContext(gl_context);
+	ReleaseDC(window, device_context);
+	DestroyWindow(window);
+}
+
+HGLRC win32_create_gl_context(HWND window, HDC device_context) {
+	win32_load_gl_func_ptrs();
+
+	i32 pixel_format_attribs[] = {
+		WGL_DRAW_TO_WINDOW_ARB, true,
+		WGL_SUPPORT_OPENGL_ARB, true,
+		WGL_DOUBLE_BUFFER_ARB, true,
+		WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB,
+		WGL_COLOR_BITS_ARB, 32,
+		WGL_DEPTH_BITS_ARB, 24,
+		WGL_STENCIL_BITS_ARB, 8,
+		// WGL_SAMPLE_BUFFERS_ARB, 1,
+		// WGL_SAMPLES_ARB, WGL_MSAA_SAMPLES,
+		0,
+	};
+
+	i32 pixel_format_index;
+	u32 pixel_format_count;
+	wglChoosePixelFormatARB(device_context, pixel_format_attribs, 0, 1, &pixel_format_index, &pixel_format_count);
+	ASSERT(pixel_format_index);
+
+	PIXELFORMATDESCRIPTOR pixel_format;
+	DescribePixelFormat(device_context, pixel_format_index, sizeof(pixel_format), &pixel_format);
+
+	b32 pixel_format_set = SetPixelFormat(device_context, pixel_format_index, &pixel_format);
+
+#if 1
+	HGLRC gl_context = wglCreateContext(device_context);
+#else
+	i32 context_attribs[] = {
+		WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
+		WGL_CONTEXT_MINOR_VERSION_ARB, 4,
+		WGL_CONTEXT_FLAGS_ARB, 0,
+		0,
+	};
+
+	HGLRC gl_context = wglCreateContextAttribsARB(device_context, 0, context_attribs);
+#endif
+	ASSERT(gl_context);
+	if(wglMakeCurrent(device_context, gl_context)) {
+		//TODO: Do we need to do anything here??
 	}
 	else {
 		INVALID_PATH();

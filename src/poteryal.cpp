@@ -181,4 +181,6 @@ void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
 	glEnableVertexAttribArray(game_state->pos_loc);
 
 	glDrawArrays(GL_TRIANGLES, 0, game_state->v_buf.vert_count);
+
+	// glFlush();
 }
