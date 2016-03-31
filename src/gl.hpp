@@ -19,6 +19,7 @@
 	X(glCompileShader, GLCOMPILESHADER) \
 	X(glCreateProgram, GLCREATEPROGRAM) \
 	X(glCreateShader, GLCREATESHADER) \
+	X(glDebugMessageCallback, GLDEBUGMESSAGECALLBACK) \
 	X(glDispatchCompute, GLDISPATCHCOMPUTE) \
 	X(glEnableVertexAttribArray, GLENABLEVERTEXATTRIBARRAY) \
 	X(glFramebufferRenderbuffer, GLFRAMEBUFFERRENDERBUFFER) \
@@ -53,14 +54,14 @@
 	GL_FUNC_PTR_X
 #undef X
 
-#define STRINGIFY_GLSL_SHADER(version, shader) "#version " #version "\n" #shader
+#define GLSL_STRINGIFY(version, shader) "#version " #version "\n" #shader
 
 #define GL_MAX_INFO_LOG_LENGTH 1024
 
-// #if DEBUG_ENABLED
-#if 1
+#if DEBUG_MODE
+
 #define GL_CHECK_ERRORS() { GLenum err = glGetError(); while(err != GL_NO_ERROR) { printf("ERROR: %s:%u: %s\n", (char *)__FILE__, __LINE__, gl_error_to_str(err)); err = glGetError(); } }
-char * gl_error_to_str(GLenum err) {
+inline char * gl_error_to_str(GLenum err) {
 	char const * str = "";
 
 	switch(err) {
@@ -99,8 +100,141 @@ char * gl_error_to_str(GLenum err) {
 
 	return (char *)str;
 }
+
+inline char * gl_debug_src_to_str(GLenum src) {
+	char * str = "";
+
+	switch(src) {
+		case GL_DEBUG_SOURCE_API: {
+			str = "GL_DEBUG_SOURCE_API";
+			break;
+		}
+
+		case GL_DEBUG_SOURCE_WINDOW_SYSTEM: {
+			str = "GL_DEBUG_SOURCE_WINDOW_SYSTEM";
+			break;
+		}
+
+		case GL_DEBUG_SOURCE_SHADER_COMPILER: {
+			str = "GL_DEBUG_SOURCE_SHADER_COMPILER";
+			break;
+		}
+
+		case GL_DEBUG_SOURCE_THIRD_PARTY: {
+			str = "GL_DEBUG_SOURCE_THIRD_PARTY";
+			break;
+		}
+
+		case GL_DEBUG_SOURCE_APPLICATION: {
+			str = "GL_DEBUG_SOURCE_APPLICATION";
+			break;
+		}
+
+		case GL_DEBUG_SOURCE_OTHER: {
+			str = "GL_DEBUG_SOURCE_OTHER";
+			break;
+		}
+
+		INVALID_CASE();
+	}
+
+	return str;
+}
+
+inline char * gl_debug_type_to_str(GLenum type) {
+	char * str = "";
+
+	switch(type) {
+		case GL_DEBUG_TYPE_ERROR: {
+			str = "GL_DEBUG_TYPE_ERROR";
+			break;
+		}
+
+		case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: {
+			str = "GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR";
+			break;
+		}
+
+		case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: {
+			str = "GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR";
+			break;
+		}
+
+		case GL_DEBUG_TYPE_PORTABILITY: {
+			str = "GL_DEBUG_TYPE_PORTABILITY";
+			break;
+		}
+
+		case GL_DEBUG_TYPE_PERFORMANCE: {
+			str = "GL_DEBUG_TYPE_PERFORMANCE";
+			break;
+		}
+
+		case GL_DEBUG_TYPE_OTHER: {
+			str = "GL_DEBUG_TYPE_OTHER";
+			break;
+		}
+
+		case GL_DEBUG_TYPE_MARKER: {
+			str = "GL_DEBUG_TYPE_MARKER";
+			break;
+		}
+
+		case GL_DEBUG_TYPE_PUSH_GROUP: {
+			str = "GL_DEBUG_TYPE_PUSH_GROUP";
+			break;
+		}
+
+		case GL_DEBUG_TYPE_POP_GROUP: {
+			str = "GL_DEBUG_TYPE_POP_GROUP";
+			break;
+		}		
+
+		INVALID_CASE();
+	}
+
+	return str;
+}
+
+inline char * gl_debug_severity_to_str(GLenum severity) {
+	char * str = "";
+
+	switch(severity) {
+		case GL_DEBUG_SEVERITY_HIGH: {
+			str = "GL_DEBUG_SEVERITY_HIGH";
+			break;
+		}
+
+		case GL_DEBUG_SEVERITY_MEDIUM: {
+			str = "GL_DEBUG_SEVERITY_MEDIUM";
+			break;
+		}
+
+		case GL_DEBUG_SEVERITY_LOW: {
+			str = "GL_DEBUG_SEVERITY_LOW";
+			break;
+		}
+
+		case GL_DEBUG_SEVERITY_NOTIFICATION: {
+			str = "GL_DEBUG_SEVERITY_NOTIFICATION";
+			break;
+		}
+
+		INVALID_CASE();
+	}
+
+	return str;
+}
+
+inline void gl_debug_callback(GLenum src, GLenum type, GLuint id, GLenum severity, GLsizei len, GLchar const * msg, void const * user_ptr) {
+	printf("ERROR: %s | %s | %s | %.*s\n", gl_debug_src_to_str(src), gl_debug_type_to_str(type), gl_debug_severity_to_str(severity), len, msg);
+	// INVALID_PATH();
+}
+
 #else
+
 #define GL_CHECK_ERRORS(...)
+
 #endif
 
 struct GLVertexBuffer {

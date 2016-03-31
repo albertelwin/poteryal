@@ -1,5 +1,5 @@
 
-char const * BASIC_FS_SRC = STRINGIFY_GLSL_SHADER(330,
+char const * BASIC_FS_SRC = GLSL_STRINGIFY(330,
 
 in vec2 tex_coord;
 

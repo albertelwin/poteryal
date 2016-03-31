@@ -8,7 +8,6 @@
 #include <cstdlib>
 
 #ifdef WIN32
-	#define WIN32_LEAN_AND_MEAN
 	#define NOMINMAX
 	#include <windows.h>
 #endif
@@ -16,7 +15,7 @@
 #define __TOKEN_STRINGIFY(x) #x
 #define TOKEN_STRINGIFY(x) __TOKEN_STRINGIFY(x)
 
-#if DEBUG_ENABLED
+#if DEBUG_MODE
 
 #if defined(WIN32)
 #define __PRINT_ASSERT(x) MessageBoxA(0, x, "ASSERT", MB_OK | MB_ICONERROR); printf("ASSERT: %s\n", x)
@@ -125,6 +124,25 @@ inline b32 c_str_eql(char const * str0, char const * str1) {
 	}
 
 	return *str0 == 0 && *str1 == 0;
+}
+
+inline b32 str_eql(char * x, u32 x_len, char * y, u32 y_len) {
+	b32 equal;
+	if(x_len == y_len) {
+		equal = true;
+
+		for(u32 i = 0; i < x_len; i++) {
+			if(x[i] != y[i]) {
+				equal = false;
+				break;
+			}
+		}
+	}
+	else {
+		equal = false;
+	}
+
+	return equal;
 }
 
 struct MemoryPtr {
@@ -287,28 +305,12 @@ inline void str_clear(Str * str) {
 	str->ptr[0] = 0;
 }
 
-inline b32 str_equal(Str * str_x, Str * str_y) {
-	b32 equal;
-	if(str_x->len == str_y->len) {
-		equal = true;
-
-		for(u32 i = 0; i < str_x->len; i++) {
-			if(str_x->ptr[i] != str_y->ptr[i]) {
-				equal = false;
-				break;
-			}
-		}
-	}
-	else {
-		equal = false;
-	}
-
-	return equal;
+inline b32 str_eql(Str * x, char * y) {
+	return str_eql(x->ptr, x->len, y, c_str_len(y));
 }
 
-inline b32 str_equal(Str * str_x, char const * c_str) {
-	Str str_y = str_from_c_str(c_str);
-	return str_equal(str_x, &str_y);
+inline b32 str_eql(Str * x, Str * y) {
+	return str_eql(x->ptr, x->len, y->ptr, y->len);
 }
 
 inline void str_push(Str * str, char char_) {
