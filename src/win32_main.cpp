@@ -1,11 +1,13 @@
 
 /* TODO ✓
 
+OpenGL GPU timings -> https://www.opengl.org/registry/specs/ARB/timer_query.txt
+
 Bilinear texture writing
 Trilinear texture writing
 3D texture memory layout
 
-Robust OpenGL function pointers -> https://www.opengl.org/wiki/Load_OpenGL_Functions#Windows_2
+OpenGL VSync
 
 */
 
@@ -15,11 +17,10 @@ Robust OpenGL function pointers -> https://www.opengl.org/wiki/Load_OpenGL_Funct
 
 #include <wglext.h>
 
-PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB;
-
 #define WGL_FUNC_PTR_X \
 	X(wglChoosePixelFormatARB, WGLCHOOSEPIXELFORMATARB) \
 	X(wglCreateContextAttribsARB, WGLCREATECONTEXTATTRIBSARB) \
+	X(wglGetExtensionsStringARB, WGLGETEXTENSIONSSTRINGARB) \
 	\
 
 #define X(name, type) typedef PFN##type##PROC name##__; name##__ name;
@@ -29,10 +30,10 @@ PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB;
 #define WGL_MSAA_SAMPLES 8
 
 #define WGL_EXT_X \
-	X(WGL_ARB_pixel_format) \
 	X(WGL_ARB_create_context) \
 	X(WGL_ARB_create_context_profile) \
 	X(WGL_ARB_multisample) \
+	X(WGL_ARB_pixel_format) \
 	\
 
 struct WGLExtensions {
@@ -45,7 +46,7 @@ struct WGLExtensions {
 
 static b32 global_win32_running = false;
 
-WGLExtensions win32_load_wgl() {
+WGLExtensions wgl_load_func_ptrs() {
 	WGLExtensions wgl_exts;
 	ZERO_STRUCT(&wgl_exts);
 
@@ -83,12 +84,11 @@ WGLExtensions win32_load_wgl() {
 
 	HGLRC gl_context = wglCreateContext(device_context);
 	if(wglMakeCurrent(device_context, gl_context)) {
-		wglGetExtensionsStringARB = (PFNWGLGETEXTENSIONSSTRINGARBPROC)wglGetProcAddress("wglGetExtensionsStringARB");
-		ASSERT(wglGetExtensionsStringARB);
-
 #define X(name, type) name = (PFN##type##PROC)wglGetProcAddress(#name);
 		WGL_FUNC_PTR_X
 #undef X
+
+		ASSERT(wglGetExtensionsStringARB);
 
 		char wgl_ext_buf[4096];
 		c_str_cpy(wgl_ext_buf, wglGetExtensionsStringARB(device_context));
@@ -131,11 +131,11 @@ WGLExtensions win32_load_wgl() {
 }
 
 HGLRC win32_create_gl_context(HWND window, HDC device_context) {
-	WGLExtensions wgl_exts = win32_load_wgl();
-	ASSERT(wgl_exts.WGL_ARB_pixel_format_);
+	WGLExtensions wgl_exts = wgl_load_func_ptrs();
 	ASSERT(wgl_exts.WGL_ARB_create_context_);
 	ASSERT(wgl_exts.WGL_ARB_create_context_profile_);
 	ASSERT(wgl_exts.WGL_ARB_multisample_);
+	ASSERT(wgl_exts.WGL_ARB_pixel_format_);
 
 	i32 pixel_format_attribs[] = {
 		WGL_DRAW_TO_WINDOW_ARB, true,
@@ -176,7 +176,7 @@ HGLRC win32_create_gl_context(HWND window, HDC device_context) {
 	HGLRC gl_context = wglCreateContextAttribsARB(device_context, 0, context_attribs);
 	ASSERT(gl_context);
 	if(wglMakeCurrent(device_context, gl_context)) {
-#define X(name, type) name = (PFN##type##PROC)wglGetProcAddress(#name);
+#define X(NAME, TYPE) NAME = (PFN##TYPE##PROC)wglGetProcAddress(#NAME);
 		GL_FUNC_PTR_X
 #undef X
 
@@ -184,6 +184,23 @@ HGLRC win32_create_gl_context(HWND window, HDC device_context) {
 		glEnable(GL_DEBUG_OUTPUT);
 		glDebugMessageCallback(gl_debug_callback, 0);
 #endif
+
+		GLExtensions gl_exts;
+		ZERO_STRUCT(&gl_exts);
+
+		i32 ext_count;
+		glGetIntegerv(GL_NUM_EXTENSIONS, &ext_count);
+		for(i32 i = 0; i < ext_count; i++) {
+			char * ext = (char *)glGetStringi(GL_EXTENSIONS, i);
+			u32 ext_len = c_str_len(ext);
+
+ 			// printf("LOG: [%d]: %s\n", i, ext);
+
+			if(false) {}
+#define X(NAME) else if(str_eql(ext, ext_len, #NAME, c_str_len(#NAME))) { gl_exts.##NAME##_ = true; }
+			GL_EXT_X
+#undef X
+		}
 	}
 	else {
 		INVALID_PATH();

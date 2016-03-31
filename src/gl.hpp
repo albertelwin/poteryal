@@ -33,6 +33,7 @@
 	X(glGetProgramiv, GLGETPROGRAMIV) \
 	X(glGetShaderInfoLog, GLGETSHADERINFOLOG) \
 	X(glGetShaderiv, GLGETSHADERIV) \
+	X(glGetStringi, GLGETSTRINGI) \
 	X(glGetUniformLocation, GLGETUNIFORMLOCATION) \
 	X(glLinkProgram, GLLINKPROGRAM) \
 	X(glRenderbufferStorage, GLRENDERBUFFERSTORAGE) \
@@ -53,6 +54,16 @@
 #define X(name, type) typedef PFN##type##PROC name##__; name##__ name;
 	GL_FUNC_PTR_X
 #undef X
+
+#define GL_EXT_X \
+	X(GL_ARB_timer_query) \
+	\
+
+struct GLExtensions {
+#define X(NAME) b32 NAME##_;
+	GL_EXT_X
+#undef X
+};
 
 #define GLSL_STRINGIFY(version, shader) "#version " #version "\n" #shader
 
