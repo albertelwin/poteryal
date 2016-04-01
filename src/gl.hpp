@@ -59,7 +59,7 @@
 	X(GL_ARB_timer_query) \
 	\
 
-struct GLExtensions {
+struct GLInfo {
 #define X(NAME) b32 NAME##_;
 	GL_EXT_X
 #undef X

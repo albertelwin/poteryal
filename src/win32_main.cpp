@@ -7,7 +7,7 @@ Bilinear texture writing
 Trilinear texture writing
 3D texture memory layout
 
-OpenGL VSync
+OpenGL VSync -> https://www.opengl.org/wiki/Swap_Interval
 
 */
 
@@ -36,19 +36,21 @@ OpenGL VSync
 	X(WGL_ARB_pixel_format) \
 	\
 
-struct WGLExtensions {
+struct WGLInfo {
 #define X(NAME) b32 NAME##_;
 	WGL_EXT_X
 #undef X
+
+	i32 max_msaa_samples;
 };
 
 #include <poteryal.cpp>
 
 static b32 global_win32_running = false;
 
-WGLExtensions wgl_load_func_ptrs() {
-	WGLExtensions wgl_exts;
-	ZERO_STRUCT(&wgl_exts);
+WGLInfo wgl_load_func_ptrs() {
+	WGLInfo wgl_info;
+	ZERO_STRUCT(&wgl_info);
 
 	WNDCLASSA window_class;
 	ZERO_STRUCT(&window_class);
@@ -104,7 +106,7 @@ WGLExtensions wgl_load_func_ptrs() {
 					// printf("LOG: %.*s\n", ext_len, ext);
 
 					if(false) {}
-#define X(NAME) else if(str_eql(ext, ext_len, #NAME, c_str_len(#NAME))) { wgl_exts.##NAME##_ = true; }
+#define X(NAME) else if(str_eql(ext, ext_len, #NAME, c_str_len(#NAME))) { wgl_info.##NAME##_ = true; }
 					WGL_EXT_X
 #undef X
 
@@ -117,6 +119,7 @@ WGLExtensions wgl_load_func_ptrs() {
 			wgl_ext_it++;
 		}
 
+		glGetIntegerv(GL_MAX_INTEGER_SAMPLES, &wgl_info.max_msaa_samples);
 	}
 	else {
 		INVALID_PATH();
@@ -127,28 +130,41 @@ WGLExtensions wgl_load_func_ptrs() {
 	ReleaseDC(window, device_context);
 	DestroyWindow(window);
 
-	return wgl_exts;
+	return wgl_info;
 }
 
 HGLRC win32_create_gl_context(HWND window, HDC device_context) {
-	WGLExtensions wgl_exts = wgl_load_func_ptrs();
-	ASSERT(wgl_exts.WGL_ARB_create_context_);
-	ASSERT(wgl_exts.WGL_ARB_create_context_profile_);
-	ASSERT(wgl_exts.WGL_ARB_multisample_);
-	ASSERT(wgl_exts.WGL_ARB_pixel_format_);
+	WGLInfo wgl_info = wgl_load_func_ptrs();
+	ASSERT(wgl_info.WGL_ARB_create_context_);
+	ASSERT(wgl_info.WGL_ARB_create_context_profile_);
+	ASSERT(wgl_info.WGL_ARB_pixel_format_);
 
-	i32 pixel_format_attribs[] = {
-		WGL_DRAW_TO_WINDOW_ARB, true,
-		WGL_SUPPORT_OPENGL_ARB, true,
-		WGL_DOUBLE_BUFFER_ARB, true,
-		WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB,
-		WGL_COLOR_BITS_ARB, 32,
-		WGL_DEPTH_BITS_ARB, 24,
-		WGL_STENCIL_BITS_ARB, 8,
-		WGL_SAMPLE_BUFFERS_ARB, 1,
-		WGL_SAMPLES_ARB, WGL_MSAA_SAMPLES,
-		0,
-	};
+	i32 pixel_format_attribs[64];
+	ZERO_ARRAY(pixel_format_attribs);
+
+	u32 pixel_format_attrib_count = 0;
+#define PUSH_PIXEL_FORMAT_ATTRIB(NAME, VALUE) pixel_format_attribs[pixel_format_attrib_count++] = (NAME); pixel_format_attribs[pixel_format_attrib_count++] = (VALUE)
+
+	PUSH_PIXEL_FORMAT_ATTRIB(WGL_DRAW_TO_WINDOW_ARB, true);
+	PUSH_PIXEL_FORMAT_ATTRIB(WGL_SUPPORT_OPENGL_ARB, true);
+	PUSH_PIXEL_FORMAT_ATTRIB(WGL_DOUBLE_BUFFER_ARB, true);
+	PUSH_PIXEL_FORMAT_ATTRIB(WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB);
+	PUSH_PIXEL_FORMAT_ATTRIB(WGL_COLOR_BITS_ARB, 32);
+	PUSH_PIXEL_FORMAT_ATTRIB(WGL_DEPTH_BITS_ARB, 24);
+	PUSH_PIXEL_FORMAT_ATTRIB(WGL_STENCIL_BITS_ARB, 8);
+
+	if(wgl_info.WGL_ARB_multisample_ && wgl_info.max_msaa_samples) {
+		i32 msaa_samples = WGL_MSAA_SAMPLES;
+		if(wgl_info.max_msaa_samples < msaa_samples) {
+			msaa_samples = wgl_info.max_msaa_samples;
+		}
+
+		PUSH_PIXEL_FORMAT_ATTRIB(WGL_SAMPLE_BUFFERS_ARB, 1);
+		PUSH_PIXEL_FORMAT_ATTRIB(WGL_SAMPLES_ARB, msaa_samples);
+	}
+
+#undef PUSH_PIXEL_FORMAT_ATTRIB
+	ASSERT(pixel_format_attrib_count < ARRAY_COUNT(pixel_format_attribs));
 
 	i32 pixel_format_index;
 	u32 pixel_format_count;
@@ -185,8 +201,8 @@ HGLRC win32_create_gl_context(HWND window, HDC device_context) {
 		glDebugMessageCallback(gl_debug_callback, 0);
 #endif
 
-		GLExtensions gl_exts;
-		ZERO_STRUCT(&gl_exts);
+		GLInfo gl_info;
+		ZERO_STRUCT(&gl_info);
 
 		i32 ext_count;
 		glGetIntegerv(GL_NUM_EXTENSIONS, &ext_count);
@@ -197,7 +213,7 @@ HGLRC win32_create_gl_context(HWND window, HDC device_context) {
  			// printf("LOG: [%d]: %s\n", i, ext);
 
 			if(false) {}
-#define X(NAME) else if(str_eql(ext, ext_len, #NAME, c_str_len(#NAME))) { gl_exts.##NAME##_ = true; }
+#define X(NAME) else if(str_eql(ext, ext_len, #NAME, c_str_len(#NAME))) { gl_info.##NAME##_ = true; }
 			GL_EXT_X
 #undef X
 		}

@@ -182,6 +182,7 @@ inline void zero_memory_arena(MemoryArena * arena) {
 }
 
 #define ZERO_STRUCT(x) zero_memory(x, sizeof(*x))
+#define ZERO_ARRAY(x) zero_memory((x), sizeof((x)));
 inline void zero_memory(void * ptr, size_t size) {
 	u8 * ptr_u8 = (u8 *)ptr;
 	for(size_t i = 0; i < size; i++) {
