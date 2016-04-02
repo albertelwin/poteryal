@@ -119,7 +119,9 @@ WGLInfo wgl_load_func_ptrs() {
 			wgl_ext_it++;
 		}
 
+#if GL_MAX_INTEGER_SAMPLES
 		glGetIntegerv(GL_MAX_INTEGER_SAMPLES, &wgl_info.max_msaa_samples);
+#endif
 	}
 	else {
 		INVALID_PATH();
@@ -217,6 +219,8 @@ HGLRC win32_create_gl_context(HWND window, HDC device_context) {
 			GL_EXT_X
 #undef X
 		}
+
+		ASSERT(gl_info.GL_ARB_timer_query_);
 	}
 	else {
 		INVALID_PATH();
@@ -290,7 +294,7 @@ int main() {
 
 		//TODO: Ensure this is correct!!
 		i32 window_offset_x = -((i32)window_width - (i32)client_width) / 2;
-		
+
 		HWND window = CreateWindowExA(0, window_class.lpszClassName, "Win32Window", window_flags, window_offset_x, 0, window_width, window_height, 0, 0, window_class.hInstance, 0);
 		ASSERT(window);
 
@@ -358,7 +362,7 @@ int main() {
 
 			i64 delta_time_i64 = ((end_perf_count.QuadPart - begin_perf_count.QuadPart) * 1000000) / perf_freq.QuadPart;
 			f64 delta_time_f64 = (f64)delta_time_i64 / 1000000.0;
-			game_input.delta_time = (f32)delta_time_f64; 
+			game_input.delta_time = (f32)delta_time_f64;
 
 			begin_perf_count = end_perf_count;
 

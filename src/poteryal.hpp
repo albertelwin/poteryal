@@ -28,6 +28,9 @@ struct GameState {
 
 	f32 total_time;
 
+	b32 perf_queries_queued;
+	u32 perf_queries[2];
+
 	u32 basic_program;
 	//TODO: Generate all these vars from the shader itself!!
 	u32 pos_loc;

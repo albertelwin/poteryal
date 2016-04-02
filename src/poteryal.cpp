@@ -77,7 +77,7 @@ void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
 		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		
+
 		for(u32 i = 0; i < ARRAY_COUNT(game_state->points); i++) {
 			game_state->points[i] = rand_sample_in_sphere();
 		}
@@ -86,9 +86,29 @@ void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 		glViewport(0, 0, game_input->back_buffer_width, game_input->back_buffer_height);
+
+		glGenQueries(ARRAY_COUNT(game_state->perf_queries), game_state->perf_queries);
 	}
 
 	game_state->total_time += game_input->delta_time;
+
+	if(game_state->perf_queries_queued) {
+		i32 queries_available = 0;
+		while(!queries_available) {
+			u32 last_index = ARRAY_COUNT(game_state->perf_queries) - 1;
+			glGetQueryObjectiv(game_state->perf_queries[last_index], GL_QUERY_RESULT_AVAILABLE, &queries_available);
+		}
+
+		u64 query_begin_time;
+		glGetQueryObjectui64v(game_state->perf_queries[0], GL_QUERY_RESULT, &query_begin_time);
+
+		u64 query_end_time;
+		glGetQueryObjectui64v(game_state->perf_queries[1], GL_QUERY_RESULT, &query_end_time);
+
+		u64 query_time_elapsed = query_end_time - query_begin_time;
+		f64 query_time_elapsed_f64 = query_time_elapsed / 1000000.0;
+		printf("LOG: %fms\n", query_time_elapsed_f64);
+	}
 
 	glClear(GL_COLOR_BUFFER_BIT);
 
@@ -146,7 +166,7 @@ void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
 		game_state->texels[sample + 0] = (u8)(r * 255.0f);
 		game_state->texels[sample + 1] = (u8)(g * 255.0f);
 		game_state->texels[sample + 2] = (u8)(b * 255.0f);
-		game_state->texels[sample + 3] = (u8)(a * 255.0f);		
+		game_state->texels[sample + 3] = (u8)(a * 255.0f);
 	}
 
 	glBindTexture(GL_TEXTURE_3D, game_state->tex_id);
@@ -186,5 +206,10 @@ void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
 	glVertexAttribPointer(game_state->pos_loc, 3, GL_FLOAT, false, 0, 0);
 	glEnableVertexAttribArray(game_state->pos_loc);
 
+	glQueryCounter(game_state->perf_queries[0], GL_TIMESTAMP);
+
 	glDrawArrays(GL_TRIANGLES, 0, game_state->v_buf.vert_count);
+
+	glQueryCounter(game_state->perf_queries[1], GL_TIMESTAMP);
+	game_state->perf_queries_queued = true;
 }

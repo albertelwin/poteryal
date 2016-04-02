@@ -65,7 +65,7 @@ void main() {
 			//TODO: How does this blending work??
 			dst = (1.0 - dst.a) * src + dst;
 
-			t += 0.02;
+			t += t_step;
 			if(t > t_max || dst.a >= 1.0) {
 				break;
 			}

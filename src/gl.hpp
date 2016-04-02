@@ -26,16 +26,20 @@
 	X(glFramebufferTexture2D, GLFRAMEBUFFERTEXTURE2D) \
 	X(glGenBuffers, GLGENBUFFERS) \
 	X(glGenFramebuffers, GLGENFRAMEBUFFERS) \
+	X(glGenQueries, GLGENQUERIES) \
 	X(glGenRenderbuffers, GLGENRENDERBUFFERS) \
 	X(glGenVertexArrays, GLGENVERTEXARRAYS) \
 	X(glGetAttribLocation, GLGETATTRIBLOCATION) \
 	X(glGetProgramInfoLog, GLGETPROGRAMINFOLOG) \
 	X(glGetProgramiv, GLGETPROGRAMIV) \
+	X(glGetQueryObjectiv, GLGETQUERYOBJECTIV) \
+	X(glGetQueryObjectui64v, GLGETQUERYOBJECTUI64V) \
 	X(glGetShaderInfoLog, GLGETSHADERINFOLOG) \
 	X(glGetShaderiv, GLGETSHADERIV) \
 	X(glGetStringi, GLGETSTRINGI) \
 	X(glGetUniformLocation, GLGETUNIFORMLOCATION) \
 	X(glLinkProgram, GLLINKPROGRAM) \
+	X(glQueryCounter, GLQUERYCOUNTER) \
 	X(glRenderbufferStorage, GLRENDERBUFFERSTORAGE) \
 	X(glRenderbufferStorageMultisample, GLRENDERBUFFERSTORAGEMULTISAMPLE) \
 	X(glShaderSource, GLSHADERSOURCE) \
@@ -199,7 +203,7 @@ inline char * gl_debug_type_to_str(GLenum type) {
 		case GL_DEBUG_TYPE_POP_GROUP: {
 			str = "GL_DEBUG_TYPE_POP_GROUP";
 			break;
-		}		
+		}
 
 		INVALID_CASE();
 	}
