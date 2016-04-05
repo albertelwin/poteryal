@@ -60,7 +60,7 @@ void main() {
 		for(int i = 0; i < 128; i++) {
 			vec3 pos = ro + rd * t;
 			vec3 uv = pos * 0.5 + 0.5;
-			vec4 src = texture3D(u_tex, uv);
+			vec4 src = texture(u_tex, uv);
 
 			//TODO: How does this blending work??
 			dst = (1.0 - dst.a) * src + dst;

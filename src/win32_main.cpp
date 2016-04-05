@@ -1,8 +1,6 @@
 
 /* TODO ✓
 
-OpenGL GPU timings -> https://www.opengl.org/registry/specs/ARB/timer_query.txt
-
 Bilinear texture writing
 Trilinear texture writing
 3D texture memory layout
@@ -257,7 +255,27 @@ LRESULT CALLBACK win32_proc(HWND window, UINT message, WPARAM w_param, LPARAM l_
 	return result;
 }
 
-HWND CreateGLWindow();
+void win32_process_key(GameInput * game_input, GameKey key, b32 is_down) {
+	u8 key_state = game_input->keys[key];
+
+	//TODO: Process multiple key transitions per frame!!
+	if(is_down) {
+		if(!(key_state & KEY_DOWN)) {
+			key_state |= KEY_PRESSED;
+		}
+
+		key_state |= KEY_DOWN;
+	}
+	else {
+		if(key_state & KEY_DOWN) {
+			key_state |= KEY_RELEASED;
+		}
+
+		key_state &= ~KEY_DOWN;
+	}
+
+	game_input->keys[key] = key_state;
+}
 
 int main() {
 	WNDCLASSA window_class;
@@ -315,6 +333,11 @@ int main() {
 
 		global_win32_running = true;
 		while(global_win32_running) {
+			for(u32 i = 0; i < ARRAY_COUNT(game_input.keys); i++) {
+				game_input.keys[i] &= ~KEY_PRESSED;
+				game_input.keys[i] &= ~KEY_RELEASED;
+			}
+
 			MSG message;
 			while(PeekMessageA(&message, 0, 0, 0, PM_REMOVE)) {
 				switch(message.message) {
@@ -332,10 +355,39 @@ int main() {
 							global_win32_running = false;
 						}
 
-						b32 alt = message.lParam && (1 << 29);
+						b32 alt = message.lParam & (1 << 29);
 						if(alt) {
 							if(vk_code == VK_F4) {
 								global_win32_running = false;
+							}
+						}
+
+						b32 is_down = (message.lParam & (1 << 31)) == 0;
+
+						switch(vk_code) {
+							case VK_UP: {
+								win32_process_key(&game_input, GameKey_up, is_down);
+								break;
+							}
+
+							case VK_DOWN: {
+								win32_process_key(&game_input, GameKey_down, is_down);
+								break;
+							}
+
+							case VK_LEFT: {
+								win32_process_key(&game_input, GameKey_left, is_down);
+								break;
+							}
+
+							case VK_RIGHT: {
+								win32_process_key(&game_input, GameKey_right, is_down);
+								break;
+							}
+
+							case VK_RETURN: {
+								win32_process_key(&game_input, GameKey_return, is_down);
+								break;
 							}
 						}
 

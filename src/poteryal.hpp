@@ -7,13 +7,25 @@
 
 #include <math.hpp>
 
+enum GameKey {
+	GameKey_up,
+	GameKey_down,
+	GameKey_left,
+	GameKey_right,
+
+	GameKey_return,
+
+	GameKey_count,
+};
+
 struct GameInput {
 	u32 back_buffer_width;
 	u32 back_buffer_height;
 
 	f32 delta_time;
-
 	b32 quit;
+
+	u8 keys[GameKey_count];
 };
 
 struct GameMemory {

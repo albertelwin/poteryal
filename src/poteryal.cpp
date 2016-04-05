@@ -107,7 +107,7 @@ void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
 
 		u64 query_time_elapsed = query_end_time - query_begin_time;
 		f64 query_time_elapsed_f64 = query_time_elapsed / 1000000.0;
-		printf("LOG: %fms\n", query_time_elapsed_f64);
+		// printf("LOG: %fms\n", query_time_elapsed_f64);
 	}
 
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -131,10 +131,10 @@ void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
 		// point *= 0.9f;
 
 		f32 len = length(point);
-		Vec3 pos = normalize(point) * (1.0f - len * len);
+		// Vec3 pos = normalize(point) * (1.0f - len * len);
 
-		// Vec3 pos = point;
-		// pos += normalize(point) * sin(game_state->total_time * TAU * (1.0f / 6.0f)) * 0.4f;
+		Vec3 pos = point * 0.6f;
+		pos += normalize(point) * sin(game_state->total_time * TAU * (1.0f / 6.0f)) * 0.4f;
 
 		Vec3 pos01 = pos * 0.5f + 0.5f;
 
@@ -184,8 +184,8 @@ void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
 	f32 gray = sin((f32)game_state->total_time) * 0.5f + 0.5f;
 	glUniform4f(game_state->color_loc, gray, gray, gray, 1.0f);
 
-	f32 camera_speed = 1.0f / 6.0f;
-	// f32 camera_speed = 0.0f;
+	// f32 camera_speed = 1.0f / 6.0f;
+	f32 camera_speed = 0.0f;
 
 	Vec3 camera_pos = vec3(0.0f);
 	camera_pos.x = cos(game_state->total_time * TAU * camera_speed) * 2.0f;
