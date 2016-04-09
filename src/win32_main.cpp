@@ -1,11 +1,14 @@
 
 /* TODO ✓
 
+OpenGL VSync -> https://www.opengl.org/wiki/Swap_Interval
+
 Bilinear texture writing
 Trilinear texture writing
 3D texture memory layout
 
-OpenGL VSync -> https://www.opengl.org/wiki/Swap_Interval
+Dynamic code reloading
+DirectSound audio
 
 */
 
@@ -19,6 +22,7 @@ OpenGL VSync -> https://www.opengl.org/wiki/Swap_Interval
 	X(wglChoosePixelFormatARB, WGLCHOOSEPIXELFORMATARB) \
 	X(wglCreateContextAttribsARB, WGLCREATECONTEXTATTRIBSARB) \
 	X(wglGetExtensionsStringARB, WGLGETEXTENSIONSSTRINGARB) \
+	X(wglSwapIntervalEXT, WGLSWAPINTERVALEXT) \
 	\
 
 #define X(name, type) typedef PFN##type##PROC name##__; name##__ name;
@@ -32,6 +36,7 @@ OpenGL VSync -> https://www.opengl.org/wiki/Swap_Interval
 	X(WGL_ARB_create_context_profile) \
 	X(WGL_ARB_multisample) \
 	X(WGL_ARB_pixel_format) \
+	X(WGL_EXT_swap_control) \
 	\
 
 struct WGLInfo {
@@ -138,6 +143,7 @@ HGLRC win32_create_gl_context(HWND window, HDC device_context) {
 	ASSERT(wgl_info.WGL_ARB_create_context_);
 	ASSERT(wgl_info.WGL_ARB_create_context_profile_);
 	ASSERT(wgl_info.WGL_ARB_pixel_format_);
+	ASSERT(wgl_info.WGL_EXT_swap_control_);
 
 	i32 pixel_format_attribs[64];
 	ZERO_ARRAY(pixel_format_attribs);
@@ -219,6 +225,10 @@ HGLRC win32_create_gl_context(HWND window, HDC device_context) {
 		}
 
 		ASSERT(gl_info.GL_ARB_timer_query_);
+
+		if(wgl_info.WGL_EXT_swap_control_) {
+			wglSwapIntervalEXT(1);
+		}
 	}
 	else {
 		INVALID_PATH();

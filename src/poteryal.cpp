@@ -128,14 +128,9 @@ void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
 
 	for(u32 i = 0; i < ARRAY_COUNT(game_state->points); i++) {
 		Vec3 point = game_state->points[i];
-		// point *= 0.9f;
 
 		f32 len = length(point);
-		// Vec3 pos = normalize(point) * (1.0f - len * len);
-
-		Vec3 pos = point * 0.6f;
-		pos += normalize(point) * sin(game_state->total_time * TAU * (1.0f / 6.0f)) * 0.4f;
-
+		Vec3 pos = normalize(point) * (1.0f - len * len);
 		Vec3 pos01 = pos * 0.5f + 0.5f;
 
 		u32 u = (u32)(pos01.x * (game_state->tex_size - 1));
@@ -184,8 +179,7 @@ void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
 	f32 gray = sin((f32)game_state->total_time) * 0.5f + 0.5f;
 	glUniform4f(game_state->color_loc, gray, gray, gray, 1.0f);
 
-	// f32 camera_speed = 1.0f / 6.0f;
-	f32 camera_speed = 0.0f;
+	f32 camera_speed = 1.0f / 6.0f;
 
 	Vec3 camera_pos = vec3(0.0f);
 	camera_pos.x = cos(game_state->total_time * TAU * camera_speed) * 2.0f;
