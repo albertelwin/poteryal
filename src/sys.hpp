@@ -7,24 +7,18 @@
 #include <cstdio>
 #include <cstdlib>
 
-#ifdef WIN32
-	#define NOMINMAX
-	#include <windows.h>
-#endif
-
 #define __TOKEN_STRINGIFY(x) #x
 #define TOKEN_STRINGIFY(x) __TOKEN_STRINGIFY(x)
 
 #if DEBUG_MODE
 
 #if defined(WIN32)
-#define __PRINT_ASSERT(x) MessageBoxA(0, x, "ASSERT", MB_OK | MB_ICONERROR); printf("ASSERT: %s\n", x)
-// #define __FORCE_EXIT() exit(EXIT_FAILURE)
 #define __FORCE_EXIT() *((int *)(0)) = 0;
 #elif defined(__EMSCRIPTEN__)
-#define __PRINT_ASSERT(x) printf("ASSERT: %s\n", x)
 #define __FORCE_EXIT() emscripten_force_exit(EXIT_FAILURE)
 #endif
+
+#define __PRINT_ASSERT(x) printf("ASSERT: %s\n", x)
 
 #define __ASSERT(x) \
 	if(!(x)) { \

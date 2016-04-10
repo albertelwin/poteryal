@@ -2,6 +2,12 @@
 #ifndef POTERYAL_HPP
 #define POTERYAL_HPP
 
+#define NOMINMAX
+#include <windows.h>
+
+#include <sys.hpp>
+#include <gl.hpp>
+
 #include <basic.vs>
 #include <basic.fs>
 
@@ -61,5 +67,7 @@ struct GameState {
 
 	Vec3 points[4096 * 4];
 };
+
+extern "C" typedef void (* GameUpdateAndRender)(GameMemory * game_memory, GameInput * game_input);
 
 #endif

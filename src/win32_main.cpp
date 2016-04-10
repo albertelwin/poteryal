@@ -1,16 +1,19 @@
 
 /* TODO ✓
 
-OpenGL VSync -> https://www.opengl.org/wiki/Swap_Interval
+Win32 exe path
+Shader hot reloading
 
 Bilinear texture writing
 Trilinear texture writing
 3D texture memory layout
 
-Dynamic code reloading
 DirectSound audio
 
 */
+
+#define NOMINMAX
+#include <windows.h>
 
 #include <sys.hpp>
 
@@ -47,7 +50,14 @@ struct WGLInfo {
 	i32 max_msaa_samples;
 };
 
-#include <poteryal.cpp>
+#include <poteryal.hpp>
+
+struct Win32Game {
+	GameUpdateAndRender update_and_render;
+
+	HMODULE dll;
+	u64 timestamp;
+};
 
 static b32 global_win32_running = false;
 
@@ -143,7 +153,6 @@ HGLRC win32_create_gl_context(HWND window, HDC device_context) {
 	ASSERT(wgl_info.WGL_ARB_create_context_);
 	ASSERT(wgl_info.WGL_ARB_create_context_profile_);
 	ASSERT(wgl_info.WGL_ARB_pixel_format_);
-	ASSERT(wgl_info.WGL_EXT_swap_control_);
 
 	i32 pixel_format_attribs[64];
 	ZERO_ARRAY(pixel_format_attribs);
@@ -226,7 +235,7 @@ HGLRC win32_create_gl_context(HWND window, HDC device_context) {
 
 		ASSERT(gl_info.GL_ARB_timer_query_);
 
-		if(wgl_info.WGL_EXT_swap_control_) {
+		if(wglSwapIntervalEXT) {
 			wglSwapIntervalEXT(1);
 		}
 	}
@@ -237,6 +246,36 @@ HGLRC win32_create_gl_context(HWND window, HDC device_context) {
 	return gl_context;
 }
 
+void win32_load_game_dll(Win32Game * game) {
+	u64 timestamp = 0;
+
+	WIN32_FILE_ATTRIBUTE_DATA dll_attribs;
+	if(GetFileAttributesEx("bin/Poteryal.dll", GetFileExInfoStandard, &dll_attribs)) {
+		timestamp = ((u64)dll_attribs.ftLastWriteTime.dwHighDateTime << 32) + dll_attribs.ftLastWriteTime.dwLowDateTime;
+
+		WIN32_FILE_ATTRIBUTE_DATA lock_attribs;
+		if(!GetFileAttributesEx("bin/lock", GetFileExInfoStandard, &lock_attribs)) {
+			if(!game->dll || timestamp > game->timestamp) {
+				if(game->dll) {
+					FreeLibrary(game->dll);
+				}
+
+				b32 copied = CopyFile("bin/Poteryal.dll", "bin/Poteryal__.dll", false);
+				ASSERT(copied);
+
+				game->dll = LoadLibraryA("bin/Poteryal__.dll");
+				ASSERT(game->dll);
+
+				game->update_and_render = (GameUpdateAndRender)GetProcAddress(game->dll, "game_update_and_render");
+			}
+
+			game->timestamp = timestamp;
+		}
+	}
+
+	ASSERT(game->update_and_render);
+}
+
 LRESULT CALLBACK win32_proc(HWND window, UINT message, WPARAM w_param, LPARAM l_param) {
 	LRESULT result = 0;
 
@@ -244,15 +283,6 @@ LRESULT CALLBACK win32_proc(HWND window, UINT message, WPARAM w_param, LPARAM l_
 		case WM_CLOSE:
 		case WM_DESTROY: {
 			global_win32_running = false;
-			break;
-		}
-
-		//TODO: Do we need this??
-		case WM_PAINT: {
-			PAINTSTRUCT paint;
-			BeginPaint(window, &paint);
-			EndPaint(window, &paint);
-
 			break;
 		}
 
@@ -331,6 +361,9 @@ int main() {
 
 		char * gl_version = (char *)glGetString(GL_VERSION);
 
+		Win32Game game;
+		ZERO_STRUCT(&game);
+
 		GameMemory game_memory;
 		ZERO_STRUCT(&game_memory);
 		game_memory.size = MEGABYTES(32);
@@ -343,6 +376,8 @@ int main() {
 
 		global_win32_running = true;
 		while(global_win32_running) {
+			win32_load_game_dll(&game);
+
 			for(u32 i = 0; i < ARRAY_COUNT(game_input.keys); i++) {
 				game_input.keys[i] &= ~KEY_PRESSED;
 				game_input.keys[i] &= ~KEY_RELEASED;
@@ -412,7 +447,10 @@ int main() {
 				}
 			}
 
-			game_update_and_render(&game_memory, &game_input);
+			if(game.update_and_render) {
+				game.update_and_render(&game_memory, &game_input);
+			}
+
 			if(game_input.quit) {
 				global_win32_running = false;
 			}

@@ -273,4 +273,9 @@ struct GLFrameBuffer {
 	u32 height;
 };
 
+u32 gl_program();
+void gl_compile_and_add_shader(u32 program, char const * shader_src, GLenum shader_types);
+void gl_link_program(u32 program);
+GLVertexBuffer gl_vertex_buffer(f32 * vert_data, u32 vert_data_count, u32 components, GLenum usage_flag);
+
 #endif

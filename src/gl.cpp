@@ -51,7 +51,7 @@ void gl_link_program(GLuint program_id) {
 	}
 }
 
-GLVertexBuffer gl_vertex_buffer(f32 const * vert_data, u32 vert_data_count, u32 components, GLenum usage_flag) {
+GLVertexBuffer gl_vertex_buffer(f32 * vert_data, u32 vert_data_count, u32 components, GLenum usage_flag) {
 	GLVertexBuffer vertex_buffer = {};
 	vertex_buffer.vert_count = vert_data_count / components;
 	vertex_buffer.components = components;
@@ -90,7 +90,7 @@ GLFrameBuffer gl_frame_buffer(u32 width, u32 height, b32 use_depth, GLint min_fi
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
 		glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, frame_buffer.depth_buffer_id);			
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, frame_buffer.depth_buffer_id);
 	}
 
 	ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);

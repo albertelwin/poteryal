@@ -1,14 +1,21 @@
 
 #include <poteryal.hpp>
 
+#include <gl.cpp>
 #include <math.cpp>
 
 #define TEXTURE_CHANNELS 4
 
-void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
+extern "C" void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
 	ASSERT(sizeof(GameState) <= game_memory->size);
 	GameState * game_state = (GameState *)game_memory->ptr;
 
+	//TOOD: Only reload gl func ptrs when we have to!!
+#define X(NAME, TYPE) NAME = (PFN##TYPE##PROC)wglGetProcAddress(#NAME);
+		GL_FUNC_PTR_X
+#undef X
+
+#if 1
 	if(!game_memory->initialised) {
 		game_memory->initialised = true;
 
@@ -180,6 +187,7 @@ void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
 	glUniform4f(game_state->color_loc, gray, gray, gray, 1.0f);
 
 	f32 camera_speed = 1.0f / 6.0f;
+	// f32 camera_speed = 0.0f;
 
 	Vec3 camera_pos = vec3(0.0f);
 	camera_pos.x = cos(game_state->total_time * TAU * camera_speed) * 2.0f;
@@ -206,4 +214,5 @@ void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
 
 	glQueryCounter(game_state->perf_queries[1], GL_TIMESTAMP);
 	game_state->perf_queries_queued = true;
+#endif
 }
