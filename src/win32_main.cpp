@@ -1,7 +1,6 @@
 
 /* TODO ✓
 
-Win32 exe path
 Shader hot reloading
 
 Bilinear texture writing
@@ -246,24 +245,46 @@ HGLRC win32_create_gl_context(HWND window, HDC device_context) {
 	return gl_context;
 }
 
+void win32_get_path(char * str) {
+	GetModuleFileNameA(0, str, MAX_PATH);
+
+	u32 str_len = c_str_len(str);
+	for(i32 i = (str_len - 1); i >= 0; i--) {
+		if(str[i] == '/' || str[i] == '\\') {
+			str[i + 1] = '\0';
+			break;
+		}
+	}
+}
+
 void win32_load_game_dll(Win32Game * game) {
-	u64 timestamp = 0;
+	char dll_path[MAX_PATH];
+	win32_get_path(dll_path);
+	c_str_cat(dll_path, "Poteryal.dll");
+
+	char tmp_path[MAX_PATH];
+	win32_get_path(tmp_path);
+	c_str_cat(tmp_path, "Poteryal__.dll");
+
+	char lck_path[MAX_PATH];
+	win32_get_path(lck_path);
+	c_str_cat(lck_path, "lock");
 
 	WIN32_FILE_ATTRIBUTE_DATA dll_attribs;
-	if(GetFileAttributesEx("bin/Poteryal.dll", GetFileExInfoStandard, &dll_attribs)) {
-		timestamp = ((u64)dll_attribs.ftLastWriteTime.dwHighDateTime << 32) + dll_attribs.ftLastWriteTime.dwLowDateTime;
+	if(GetFileAttributesEx(dll_path, GetFileExInfoStandard, &dll_attribs)) {
+		u64 timestamp = ((u64)dll_attribs.ftLastWriteTime.dwHighDateTime << 32) + dll_attribs.ftLastWriteTime.dwLowDateTime;
 
 		WIN32_FILE_ATTRIBUTE_DATA lock_attribs;
-		if(!GetFileAttributesEx("bin/lock", GetFileExInfoStandard, &lock_attribs)) {
+		if(!GetFileAttributesEx(lck_path, GetFileExInfoStandard, &lock_attribs)) {
 			if(!game->dll || timestamp > game->timestamp) {
 				if(game->dll) {
 					FreeLibrary(game->dll);
 				}
 
-				b32 copied = CopyFile("bin/Poteryal.dll", "bin/Poteryal__.dll", false);
+				b32 copied = CopyFile(dll_path, tmp_path, false);
 				ASSERT(copied);
 
-				game->dll = LoadLibraryA("bin/Poteryal__.dll");
+				game->dll = LoadLibraryA(tmp_path);
 				ASSERT(game->dll);
 
 				game->update_and_render = (GameUpdateAndRender)GetProcAddress(game->dll, "game_update_and_render");
@@ -317,7 +338,7 @@ void win32_process_key(GameInput * game_input, GameKey key, b32 is_down) {
 	game_input->keys[key] = key_state;
 }
 
-int main() {
+int CALLBACK WinMain(HINSTANCE h_inst, HINSTANCE h_prev_inst, LPSTR cmd_line, int cmd_show) {
 	WNDCLASSA window_class;
 	ZERO_STRUCT(&window_class);
 	window_class.style = CS_OWNDC | CS_HREDRAW | CS_VREDRAW;

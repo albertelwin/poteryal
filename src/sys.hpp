@@ -120,6 +120,18 @@ inline b32 c_str_eql(char const * str0, char const * str1) {
 	return *str0 == 0 && *str1 == 0;
 }
 
+inline void c_str_cat(char * dst, char * src) {
+	while(*dst) {
+		dst++;
+	}
+
+	while(*src) {
+		*dst++ = *src++;
+	}
+
+	*dst = 0;
+}
+
 inline b32 str_eql(char * x, u32 x_len, char * y, u32 y_len) {
 	b32 equal;
 	if(x_len == y_len) {
