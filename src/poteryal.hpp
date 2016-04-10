@@ -8,9 +8,6 @@
 #include <sys.hpp>
 #include <gl.hpp>
 
-#include <basic.vs>
-#include <basic.fs>
-
 #include <math.hpp>
 
 enum GameKey {
@@ -38,6 +35,7 @@ struct GameMemory {
 	size_t size;
 	u8 * ptr;
 
+	b32 reloaded;
 	b32 initialised;
 };
 
@@ -49,7 +47,7 @@ struct GameState {
 	b32 perf_queries_queued;
 	u32 perf_queries[2];
 
-	u32 basic_program;
+	u32 raycast_program;
 	//TODO: Generate all these vars from the shader itself!!
 	u32 pos_loc;
 	u32 tex_loc;

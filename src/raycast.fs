@@ -1,5 +1,5 @@
 
-char const * BASIC_FS_SRC = GLSL_STRINGIFY(330,
+char const * RAYCAST_FS = GLSL_STRINGIFY(330,
 
 in vec2 tex_coord;
 
@@ -63,7 +63,7 @@ void main() {
 			vec4 src = texture(u_tex, uv);
 
 			//TODO: How does this blending work??
-			dst = (1.0 - dst.a) * src + dst;
+			dst += (1.0 - dst.a) * src;
 
 			t += t_step;
 			if(t > t_max || dst.a >= 1.0) {

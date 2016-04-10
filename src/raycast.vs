@@ -1,5 +1,5 @@
 
-char const * BASIC_VS_SRC = GLSL_STRINGIFY(330,
+char const * RAYCAST_VS = GLSL_STRINGIFY(330,
 
 layout(location = 0) in vec3 i_position;
 

@@ -20,6 +20,7 @@
 	X(glCreateProgram, GLCREATEPROGRAM) \
 	X(glCreateShader, GLCREATESHADER) \
 	X(glDebugMessageCallback, GLDEBUGMESSAGECALLBACK) \
+	X(glDeleteProgram, GLDELETEPROGRAM) \
 	X(glDispatchCompute, GLDISPATCHCOMPUTE) \
 	X(glEnableVertexAttribArray, GLENABLEVERTEXATTRIBARRAY) \
 	X(glFramebufferRenderbuffer, GLFRAMEBUFFERRENDERBUFFER) \

@@ -1,11 +1,8 @@
 
 /* TODO ✓
 
-Shader hot reloading
-
 Bilinear texture writing
 Trilinear texture writing
-3D texture memory layout
 
 DirectSound audio
 
@@ -257,7 +254,9 @@ void win32_get_path(char * str) {
 	}
 }
 
-void win32_load_game_dll(Win32Game * game) {
+b32 win32_load_game_dll(Win32Game * game) {
+	b32 loaded = false;
+
 	char dll_path[MAX_PATH];
 	win32_get_path(dll_path);
 	c_str_cat(dll_path, "Poteryal.dll");
@@ -288,6 +287,8 @@ void win32_load_game_dll(Win32Game * game) {
 				ASSERT(game->dll);
 
 				game->update_and_render = (GameUpdateAndRender)GetProcAddress(game->dll, "game_update_and_render");
+
+				loaded = true;
 			}
 
 			game->timestamp = timestamp;
@@ -295,6 +296,8 @@ void win32_load_game_dll(Win32Game * game) {
 	}
 
 	ASSERT(game->update_and_render);
+
+	return loaded;
 }
 
 LRESULT CALLBACK win32_proc(HWND window, UINT message, WPARAM w_param, LPARAM l_param) {
@@ -397,7 +400,10 @@ int CALLBACK WinMain(HINSTANCE h_inst, HINSTANCE h_prev_inst, LPSTR cmd_line, in
 
 		global_win32_running = true;
 		while(global_win32_running) {
-			win32_load_game_dll(&game);
+			game_memory.reloaded = false;
+			if(win32_load_game_dll(&game)) {
+				game_memory.reloaded = true;
+			}
 
 			for(u32 i = 0; i < ARRAY_COUNT(game_input.keys); i++) {
 				game_input.keys[i] &= ~KEY_PRESSED;

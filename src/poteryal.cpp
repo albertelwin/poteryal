@@ -4,35 +4,43 @@
 #include <gl.cpp>
 #include <math.cpp>
 
+#include <raycast.vs>
+#include <raycast.fs>
+
 #define TEXTURE_CHANNELS 4
 
 extern "C" void game_update_and_render(GameMemory * game_memory, GameInput * game_input) {
 	ASSERT(sizeof(GameState) <= game_memory->size);
 	GameState * game_state = (GameState *)game_memory->ptr;
 
-	//TOOD: Only reload gl func ptrs when we have to!!
+	if(game_memory->reloaded) {
 #define X(NAME, TYPE) NAME = (PFN##TYPE##PROC)wglGetProcAddress(#NAME);
 		GL_FUNC_PTR_X
 #undef X
 
-#if 1
+		if(game_state->raycast_program) {
+			glDeleteProgram(game_state->raycast_program);
+		}
+
+		game_state->raycast_program = gl_program();
+		gl_compile_and_add_shader(game_state->raycast_program, RAYCAST_VS, GL_VERTEX_SHADER);
+		gl_compile_and_add_shader(game_state->raycast_program, RAYCAST_FS, GL_FRAGMENT_SHADER);
+		gl_link_program(game_state->raycast_program);
+
+		game_state->pos_loc = glGetAttribLocation(game_state->raycast_program, "i_position");
+		game_state->tex_loc = glGetUniformLocation(game_state->raycast_program, "u_tex");
+		game_state->color_loc = glGetUniformLocation(game_state->raycast_program, "u_color");
+		game_state->u_time = glGetUniformLocation(game_state->raycast_program, "u_time");
+		game_state->inv_view_proj = glGetUniformLocation(game_state->raycast_program, "u_inv_view_proj");
+		game_state->camera_pos = glGetUniformLocation(game_state->raycast_program, "u_camera_pos");
+	}
+
 	if(!game_memory->initialised) {
 		game_memory->initialised = true;
 
 		game_state->arena = memory_arena(game_state + 1, game_memory->size - sizeof(GameState));
 
 		game_state->total_time = 0.0f;
-
-		game_state->basic_program = gl_program();
-		gl_compile_and_add_shader(game_state->basic_program, BASIC_VS_SRC, GL_VERTEX_SHADER);
-		gl_compile_and_add_shader(game_state->basic_program, BASIC_FS_SRC, GL_FRAGMENT_SHADER);
-		gl_link_program(game_state->basic_program);
-		game_state->pos_loc = glGetAttribLocation(game_state->basic_program, "i_position");
-		game_state->tex_loc = glGetUniformLocation(game_state->basic_program, "u_tex");
-		game_state->color_loc = glGetUniformLocation(game_state->basic_program, "u_color");
-		game_state->u_time = glGetUniformLocation(game_state->basic_program, "u_time");
-		game_state->inv_view_proj = glGetUniformLocation(game_state->basic_program, "u_inv_view_proj");
-		game_state->camera_pos = glGetUniformLocation(game_state->basic_program, "u_camera_pos");
 
 		//NOTE: Don't forget the VAO!!
 		glGenVertexArrays(1, &game_state->vertex_array);
@@ -42,6 +50,7 @@ extern "C" void game_update_and_render(GameMemory * game_memory, GameInput * gam
 			 1.0f, 1.0f, 0.0f,
 			-1.0f, 1.0f, 0.0f,
 			-1.0f,-1.0f, 0.0f,
+
 			-1.0f,-1.0f, 0.0f,
 			 1.0f,-1.0f, 0.0f,
 			 1.0f, 1.0f, 0.0f,
@@ -53,22 +62,18 @@ extern "C" void game_update_and_render(GameMemory * game_memory, GameInput * gam
 		for(u32 z = 0, i = 0; z < game_state->tex_size; z++) {
 			for(u32 y = 0; y < game_state->tex_size; y++) {
 				for(u32 x = 0; x < game_state->tex_size; x++, i += TEXTURE_CHANNELS) {
-
 					Vec3 pos = vec3(0.0f);
 					pos.x = (f32)x / (f32)(game_state->tex_size - 1);
 					pos.y = (f32)y / (f32)(game_state->tex_size - 1);
 					pos.z = (f32)z / (f32)(game_state->tex_size - 1);
 
-					f32 v = ((f32)rand() / (f32)RAND_MAX);
+					Vec4 color = vec4(pos, 0.05f);
+					color.rgb *= color.a;
 
-					f32 a = v * MAX(1.0f - length(pos * 2.0f - 1.0f) * 1.1f, 0.0f) * 0.2f;
-					Vec3 rgb = pos;
-					rgb *= a;
-
-					game_state->texels[i + 0] = (u8)(rgb.r * 255.0f);
-					game_state->texels[i + 1] = (u8)(rgb.g * 255.0f);
-					game_state->texels[i + 2] = (u8)(rgb.b * 255.0f);
-					game_state->texels[i + 3] = (u8)(a * 255.0f);
+					game_state->texels[i + 0] = (u8)(color.r * 255.0f);
+					game_state->texels[i + 1] = (u8)(color.g * 255.0f);
+					game_state->texels[i + 2] = (u8)(color.b * 255.0f);
+					game_state->texels[i + 3] = (u8)(color.a * 255.0f);
 				}
 			}
 		}
@@ -175,7 +180,7 @@ extern "C" void game_update_and_render(GameMemory * game_memory, GameInput * gam
 	glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA8, game_state->tex_size, game_state->tex_size, game_state->tex_size, 0, GL_RGBA, GL_UNSIGNED_BYTE, game_state->texels);
 #endif
 
-	glUseProgram(game_state->basic_program);
+	glUseProgram(game_state->raycast_program);
 
 	glBindBuffer(GL_ARRAY_BUFFER, game_state->v_buf.id);
 
@@ -186,12 +191,12 @@ extern "C" void game_update_and_render(GameMemory * game_memory, GameInput * gam
 	f32 gray = sin((f32)game_state->total_time) * 0.5f + 0.5f;
 	glUniform4f(game_state->color_loc, gray, gray, gray, 1.0f);
 
-	f32 camera_speed = 1.0f / 6.0f;
-	// f32 camera_speed = 0.0f;
+	f32 camera_dist = 2.0f;
+	f32 camera_speed = 1.0f / 24.0f;
 
 	Vec3 camera_pos = vec3(0.0f);
-	camera_pos.x = cos(game_state->total_time * TAU * camera_speed) * 2.0f;
-	camera_pos.z = sin(game_state->total_time * TAU * camera_speed) * 2.0f;
+	camera_pos.x = cos(game_state->total_time * TAU * camera_speed) * camera_dist;
+	camera_pos.z = sin(game_state->total_time * TAU * camera_speed) * camera_dist;
 
 	Mat4 view = look_at(camera_pos, vec3(0.0f), vec3(0.0f, 1.0f, 0.0f));
 
@@ -214,5 +219,4 @@ extern "C" void game_update_and_render(GameMemory * game_memory, GameInput * gam
 
 	glQueryCounter(game_state->perf_queries[1], GL_TIMESTAMP);
 	game_state->perf_queries_queued = true;
-#endif
 }
