@@ -1,7 +1,7 @@
 
-char const * RAYCAST_VS = GLSL_STRINGIFY(330,
+char const * RAYCAST_VS = GLSL_STRINGIFY(150,
 
-layout(location = 0) in vec3 i_position;
+in vec3 i_position;
 
 out vec2 tex_coord;
 

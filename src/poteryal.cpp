@@ -27,12 +27,12 @@ extern "C" void game_update_and_render(GameMemory * game_memory, GameInput * gam
 		gl_compile_and_add_shader(game_state->raycast_program, RAYCAST_FS, GL_FRAGMENT_SHADER);
 		gl_link_program(game_state->raycast_program);
 
-		game_state->pos_loc = glGetAttribLocation(game_state->raycast_program, "i_position");
-		game_state->tex_loc = glGetUniformLocation(game_state->raycast_program, "u_tex");
-		game_state->color_loc = glGetUniformLocation(game_state->raycast_program, "u_color");
+		game_state->i_position = glGetAttribLocation(game_state->raycast_program, "i_position");
+		game_state->u_tex = glGetUniformLocation(game_state->raycast_program, "u_tex");
+		game_state->u_color = glGetUniformLocation(game_state->raycast_program, "u_color");
 		game_state->u_time = glGetUniformLocation(game_state->raycast_program, "u_time");
-		game_state->inv_view_proj = glGetUniformLocation(game_state->raycast_program, "u_inv_view_proj");
-		game_state->camera_pos = glGetUniformLocation(game_state->raycast_program, "u_camera_pos");
+		game_state->u_inv_view_proj = glGetUniformLocation(game_state->raycast_program, "u_inv_view_proj");
+		game_state->u_camera_pos = glGetUniformLocation(game_state->raycast_program, "u_camera_pos");
 	}
 
 	if(!game_memory->initialised) {
@@ -107,8 +107,7 @@ extern "C" void game_update_and_render(GameMemory * game_memory, GameInput * gam
 	if(game_state->perf_queries_queued) {
 		i32 queries_available = 0;
 		while(!queries_available) {
-			u32 last_index = ARRAY_COUNT(game_state->perf_queries) - 1;
-			glGetQueryObjectiv(game_state->perf_queries[last_index], GL_QUERY_RESULT_AVAILABLE, &queries_available);
+			glGetQueryObjectiv(game_state->perf_queries[ARRAY_COUNT(game_state->perf_queries) - 1], GL_QUERY_RESULT_AVAILABLE, &queries_available);
 		}
 
 		u64 query_begin_time;
@@ -186,10 +185,10 @@ extern "C" void game_update_and_render(GameMemory * game_memory, GameInput * gam
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_3D, game_state->tex_id);
-	glUniform1i(game_state->tex_loc, 0);
+	glUniform1i(game_state->u_tex, 0);
 
 	f32 gray = sin((f32)game_state->total_time) * 0.5f + 0.5f;
-	glUniform4f(game_state->color_loc, gray, gray, gray, 1.0f);
+	glUniform4f(game_state->u_color, gray, gray, gray, 1.0f);
 
 	f32 camera_dist = 2.0f;
 	f32 camera_speed = 1.0f / 24.0f;
@@ -207,11 +206,11 @@ extern "C" void game_update_and_render(GameMemory * game_memory, GameInput * gam
 	Mat4 inv_view_proj = inverse(view_proj);
 
 	glUniform1f(game_state->u_time, game_state->total_time);
-	glUniform3f(game_state->camera_pos, camera_pos.x, camera_pos.y, camera_pos.z);
-	glUniformMatrix4fv(game_state->inv_view_proj, 1, false, inv_view_proj.v);
+	glUniform3f(game_state->u_camera_pos, camera_pos.x, camera_pos.y, camera_pos.z);
+	glUniformMatrix4fv(game_state->u_inv_view_proj, 1, false, inv_view_proj.v);
 
-	glVertexAttribPointer(game_state->pos_loc, 3, GL_FLOAT, false, 0, 0);
-	glEnableVertexAttribArray(game_state->pos_loc);
+	glVertexAttribPointer(game_state->i_position, 3, GL_FLOAT, false, 0, 0);
+	glEnableVertexAttribArray(game_state->i_position);
 
 	glQueryCounter(game_state->perf_queries[0], GL_TIMESTAMP);
 

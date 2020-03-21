@@ -647,7 +647,7 @@ inline Mat4 translate(f32 x, f32 y, f32 z) {
 		0.0f, 1.0f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f,
 		   x,    y,    z, 1.0f,
-	};		
+	};
 }
 
 inline Mat4 translate(Vec3 v) {
@@ -690,7 +690,7 @@ inline Mat4 rotate_around_x(f32 t) {
 		0.0f, cos_t, sin_t, 0.0f,
 		0.0f,-sin_t, cos_t, 0.0f,
 		0.0f,  0.0f,  0.0f, 1.0f,
-	};		
+	};
 }
 
 inline Mat4 rotate_around_y(f32 t) {
@@ -723,7 +723,7 @@ inline Mat4 scale(f32 x) {
 		0.0f,   x, 0.0f, 0.0f,
 		0.0f, 0.0f,   x, 0.0f,
 		0.0f, 0.0f, 0.0f, 1.0f,
-	};		
+	};
 }
 
 inline Mat4 scale(f32 x, f32 y, f32 z) {
@@ -762,7 +762,7 @@ inline Mat4 perspective_projection(f32 aspect_ratio, f32 field_of_view, f32 near
 		1.0f / (aspect_ratio * tan_fov_over_2), 0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f / tan_fov_over_2, 0.0f, 0.0f,
 		0.0f, 0.0f, -(far_plane + near_plane) / (far_plane - near_plane), -1.0f,
-		0.0f, 0.0f, -(2.0f * far_plane * near_plane) / (far_plane - near_plane), 0.0f,						
+		0.0f, 0.0f, -(2.0f * far_plane * near_plane) / (far_plane - near_plane), 0.0f,
 	};
 }
 

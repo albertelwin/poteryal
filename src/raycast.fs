@@ -1,5 +1,5 @@
 
-char const * RAYCAST_FS = GLSL_STRINGIFY(330,
+char const * RAYCAST_FS = GLSL_STRINGIFY(150,
 
 in vec2 tex_coord;
 
@@ -10,7 +10,7 @@ uniform float u_time = 0.0;
 uniform mat4 u_inv_view_proj;
 uniform vec3 u_camera_pos;
 
-layout(location = 0) out vec4 o_color;
+out vec4 o_color;
 
 //NOTE: Tavian Barnes Ray-AABB Intersection -> https://tavianator.com/fast-branchless-raybounding-box-intersections/
 bool intersect(vec3 box_min, vec3 box_max, vec3 ro, vec3 rd, out float t_min, out float t_max) {

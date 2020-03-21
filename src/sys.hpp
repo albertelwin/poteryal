@@ -11,30 +11,26 @@
 #define TOKEN_STRINGIFY(x) __TOKEN_STRINGIFY(x)
 
 #if DEBUG_MODE
+	#if defined(WIN32)
+		#define __FORCE_EXIT() *((int *)(0)) = 0;
+	#elif defined(__EMSCRIPTEN__)
+		#define __FORCE_EXIT() emscripten_force_exit(EXIT_FAILURE)
+	#endif
 
-#if defined(WIN32)
-#define __FORCE_EXIT() *((int *)(0)) = 0;
-#elif defined(__EMSCRIPTEN__)
-#define __FORCE_EXIT() emscripten_force_exit(EXIT_FAILURE)
-#endif
+	#define __PRINT_ASSERT(x) printf("ASSERT: %s\n", x)
 
-#define __PRINT_ASSERT(x) printf("ASSERT: %s\n", x)
+	#define __ASSERT(x) \
+		if(!(x)) { \
+			__PRINT_ASSERT("" #x " : " __FILE__ " : " TOKEN_STRINGIFY(__LINE__)); \
+			__FORCE_EXIT(); \
+		}
 
-#define __ASSERT(x) \
-	if(!(x)) { \
-		__PRINT_ASSERT("" #x " : " __FILE__ " : " TOKEN_STRINGIFY(__LINE__)); \
-		__FORCE_EXIT(); \
-	}
-
-#define ASSERT(x) __ASSERT(x)
-#define INVALID_PATH() ASSERT(!"Invalid path")
-#define INVALID_CASE() default: { ASSERT(!"Invalid case"); break; }
-
+	#define ASSERT(x) __ASSERT(x)
+	#define INVALID_PATH() ASSERT(!"Invalid path")
+	#define INVALID_CASE() default: { ASSERT(!"Invalid case"); break; }
 #else
-
-#define ASSERT(...)
-#define INVALID_CASE(...) default: { break; }
-
+	#define ASSERT(...)
+	#define INVALID_CASE(...) default: { break; }
 #endif
 
 #define ARRAY_COUNT(x) (sizeof((x)) / sizeof((x)[0]))

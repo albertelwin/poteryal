@@ -3,13 +3,26 @@
 
 Bilinear texture writing
 Trilinear texture writing
+Improve volume rendering -> http://http.developer.nvidia.com/GPUGems/gpugems_ch39.html
 
-DirectSound audio
+DirectSound support
+Raw Input support -> https://msdn.microsoft.com/en-us/library/windows/desktop/ms645536(v=vs.85).aspx
 
 */
 
+#define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
+//TODO: Remove windows.h!!
 #include <windows.h>
+#undef near
+#undef far
+
+#define WINMMAPI DECLSPEC_IMPORT
+typedef UINT MMRESULT;
+
+extern "C" {
+	WINMMAPI MMRESULT WINAPI timeBeginPeriod(_In_ UINT uPeriod);
+}
 
 #include <sys.hpp>
 
@@ -193,8 +206,8 @@ HGLRC win32_create_gl_context(HWND window, HDC device_context) {
 #endif
 
 	i32 context_attribs[] = {
-		WGL_CONTEXT_MAJOR_VERSION_ARB, 4,
-		WGL_CONTEXT_MINOR_VERSION_ARB, 3,
+		WGL_CONTEXT_MAJOR_VERSION_ARB, 3,
+		WGL_CONTEXT_MINOR_VERSION_ARB, 2,
 		WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
 		WGL_CONTEXT_FLAGS_ARB, context_flags,
 		0,

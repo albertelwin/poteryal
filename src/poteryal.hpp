@@ -2,6 +2,7 @@
 #ifndef POTERYAL_HPP
 #define POTERYAL_HPP
 
+//TODO: Remove this!!
 #define NOMINMAX
 #include <windows.h>
 
@@ -49,12 +50,12 @@ struct GameState {
 
 	u32 raycast_program;
 	//TODO: Generate all these vars from the shader itself!!
-	u32 pos_loc;
-	u32 tex_loc;
-	u32 color_loc;
+	u32 i_position;
+	u32 u_tex;
+	u32 u_color;
 	u32 u_time;
-	u32 inv_view_proj;
-	u32 camera_pos;
+	u32 u_inv_view_proj;
+	u32 u_camera_pos;
 
 	u32 vertex_array;
 	GLVertexBuffer v_buf;
